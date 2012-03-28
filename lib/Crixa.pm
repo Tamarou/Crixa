@@ -11,12 +11,12 @@ with qw(Crixa::Role::RabbitMQ);
 sub connect { shift->new(@_) }
 
 has host => ( isa => 'Str', is => 'ro', required => 1, );
+
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
 
 sub _build__mq { $_[0]->_connect_mq( $_[0] ); }
 
 has channel_id => (
-    is      => 'ro',
     isa     => 'Int',
     trigger => sub {
         my ( $self, $next ) = @_;
@@ -27,7 +27,7 @@ has channel_id => (
     default => 0,
     traits  => ['Counter'],
     handles => {
-        next_channel_id    => 'inc',
+        _next_channel_id   => 'inc',
         release_channel_id => 'dec',
         reset_channel_id   => 'reset',
     }
@@ -47,33 +47,29 @@ has channels => (
 
 sub channel {
     my $self = shift;
-    return $self->_get_channel(@_) if @_;
-    my $c = Crixa::Channel->new(
-        id => $self->next_channel_id,
-        @_,    # the rest of the args
-        _mq => $self->_mq,
-    );
+    my $args = @_ == 1 ? $_[0] : {@_};
+    return $self->_get_channel($args) unless ref $args;
+    $args->{id}  = $self->_next_channel_id;
+    $args->{_mq} = $self->_mq;
+    my $c = Crixa::Channel->new($args);
     $self->_add_channel($c);
     return $c;
 }
 
-sub queue { shift->channel->queue(@_); }
-
+sub queue      { shift->channel->queue(@_); }
 sub disconnect { shift->_mq_disconnect(); }
-
-sub DEMOLISH { shift->disconnect; }
+sub DEMOLISH   { shift->disconnect; }
 
 __PACKAGE__->meta->make_immutable;
 1;
 __END__
-
 
 =head1 SYNOPSIS 
 
     use Crixa;
     
     my $mq = Crixa->connect( host => 'localhost');
-
+    
     sub send {
         my $q = $mq->queue( name => 'hello');
         $q->publish('Hello World');
@@ -83,4 +79,74 @@ __END__
         my $q = $mq->queue( name => 'hello');
         $q->handle_message(sub { say $_->{body} });
     }
-    
+
+=head1 DESCRIPTION
+
+    All the world will be your enemy, Prince of a Thousand enemies. And when 
+    they catch you, they will kill you. But first they must catch you; digger,
+    listener, runner, Prince with the swift warning. Be cunning, and full of
+    tricks, and your people will never be destroyed. -- Richard Adams
+
+The RabbitMQ docs use Python's Pika library for most of their examples. When I
+was translating the tutorial examples to Perl so I could get a grasp on how
+different ideas would translate I found myself disliking the default
+L<Net::RabbitMQ> API. That isn't to say it's I<bad>, just really bare bones.
+So I went and wrote the API I wanted to use, influenced by he Pika examples.
+
+=head1 ATTRIBUTES 
+
+=head2 host (required)
+
+The host with the RabbitMQ instance to connect to.
+
+=head2 user
+
+A user name to connect with.
+
+=head2 password
+
+The password for the (optional) username.
+
+=head1 METHODS
+
+=head2 connection 
+
+Create a new connection to a RabbitMQ server. It takes a hash or hashref of named parameters.
+
+=over 4
+
+=item host => $hostname
+
+A required hostname to connect to.
+
+=item user => $user
+
+An optional username.
+
+=item password => $password
+
+An optional password.
+
+=back
+
+=head2 channel ($id | \%args )
+
+Return the channel associated with C<$id>. If C<$id> isn't defined it returns
+a newly created channel.
+
+=head2 queue(%args)
+
+Return a newly configured queue, this will autovivify a channel.
+
+=head2 disconnect
+
+Disconnect from the server. This is called implicitly by C<DESTROY> so
+normally there should be no need to do this explicitly.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Net::RabbitMQ>
+
+=back
