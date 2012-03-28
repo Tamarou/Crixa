@@ -10,7 +10,7 @@ my $exchange
 my @severities = @ARGV;
 die "Usage: $0 [info] [warning] [error]" unless @severities;
 
-my $q = $exchange->queue( exclusive => 1, bindings => @severities );
+my $q = $exchange->queue( exclusive => 1, bindings => \@severities );
 
 say ' [*] Waiting for logs. To exit press CTRL+C';
 $q->handle_message( sub { say "$_->{routing_key} $_->{body}" } );

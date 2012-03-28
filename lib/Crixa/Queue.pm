@@ -7,7 +7,12 @@ use namespace::autoclean;
 
 with qw(Crixa::Role::RabbitMQ);
 
-has name => ( isa => 'Str', reader => 'name', writer => '_name' );
+has name => (
+
+    #    isa    => 'Str',
+    reader => 'name',
+    writer => '_name'
+);
 
 has channel => (
     isa      => 'Crixa::Channel',
@@ -16,11 +21,10 @@ has channel => (
 );
 
 sub BUILD {
-    $_[0]->_name(
-        $_[0]->_mq_queue_declare(
-            $_[0]->channel->id, $_[0]->name // '', $_[1]
-        )
-    );
+    my $name = $_[0]
+        ->_mq->queue_declare( $_[0]->channel->id, $_[0]->name // '', $_[1] );
+    return if $_[0]->name;
+    $_[0]->_name($name);
 }
 
 sub handle_message {
@@ -28,7 +32,7 @@ sub handle_message {
     my $msg;
     $args //= {};
     do {
-        $msg = $self->_mq_get( $self->channel->id, $self->name, $args );
+        $msg = $self->_mq->get( $self->channel->id, $self->name, $args );
     } until ( defined $msg );
 
     for ($msg) { return $handler->($msg) }

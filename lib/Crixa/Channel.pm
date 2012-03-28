@@ -11,7 +11,7 @@ with qw(Crixa::Role::RabbitMQ);
 
 has id => ( isa => 'Str', is => 'ro', required => 1 );
 
-sub BUILD { $_[0]->_mq_channel_open( $_[0]->id ); }
+sub BUILD { $_[0]->_mq->channel_open( $_[0]->id ); }
 
 sub exchange {
     my $self = shift;
@@ -21,25 +21,25 @@ sub exchange {
 sub basic_qos {
     my $self = shift;
     my $args = @_ == 1 ? $_[0] : {@_};
-    $self->_mq_basic_qos( $self->id, $args );
+    $self->_mq->basic_qos( $self->id, $args );
 }
 
 sub queue {
     my $self = shift;
-    my $args = @_ == 1 ? $_[0] : {@_};
+    my $args = @_ == 1 ? shift : {@_};
     $args->{_mq}     = $self->_mq;
     $args->{channel} = $self;
     Crixa::Queue->new($args);
 }
 
-sub ack { $_[0]->_mq_ack( shift->id, @_ ) }
+sub ack { $_[0]->_mq->ack( shift->id, @_ ) }
 
 sub publish {
     my $self = shift;
     my $args = @_ == 1 ? $_[0] : {@_};
     if ( ref $args eq 'HASH' ) {
         my $props = delete $args->{props};
-        return $self->_mq_publish(
+        return $self->_mq->publish(
             $self->id,
             delete $args->{routing_key} // '',
             delete $args->{body} || confess("need to supply a body"),
@@ -47,7 +47,7 @@ sub publish {
         );
     }
     elsif ( !ref $args ) {
-        return $self->_mq_publish( $self->id, '', $args, {}, );
+        return $self->_mq->publish( $self->id, '', $args, {}, );
     }
     else {
         confess "I'm not sure what to do with $args";

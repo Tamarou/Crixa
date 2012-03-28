@@ -13,9 +13,7 @@ has channel => (
     isa      => 'Crixa::Channel',
     is       => 'ro',
     required => 1,
-    handles  => {
-        queue      => 'queue'
-    },
+    handles  => { queue => 'queue' },
 );
 
 sub BUILD {
@@ -24,12 +22,13 @@ sub BUILD {
 }
 
 around queue => sub {
-    my ( $next, $self ) = splice @_, 0, 2;
+    my $next = shift;
+    my $self = shift;
     my $args     = @_ == 1 ? $_[0] : {@_};
-    my $q        = $self->$next(%$args);
-    my @bindings = delete $args->{bindings} // ('');
-    for my $binding (@bindings) {
-        $self->_mq_queue_bind( $self->channel->id, $q->name, $self->name,
+    my $bindings = delete $args->{bindings} // ('');
+    my $q        = $self->$next($args);
+    for my $binding (@$bindings) {
+        $self->_mq->queue_bind( $self->channel->id, $q->name, $self->name,
             $binding );
     }
     return $q;

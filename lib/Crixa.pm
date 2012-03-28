@@ -8,22 +8,24 @@ use Crixa::Channel;
 
 with qw(Crixa::Role::RabbitMQ);
 
-sub connect { shift->new(@_) }
+sub connect {
+    my $o = shift->new(@_);
+    $o->_connect_mq($o);
+    return $o;
+}
 
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
 
-sub _build__mq { $_[0]->_connect_mq( $_[0] ); }
-
 has channel_id => (
     isa     => 'Int',
-    trigger => sub {
-        my ( $self, $next ) = @_;
-        confess "Cannot exceed max channel id"
-            if $self->_mq_get_channel_max()
-                && $self->_mq_get_channel_max() < $next;
-    },
+    # trigger => sub {
+    #     my ( $self, $next ) = @_;
+    #     confess "Cannot exceed max channel id"
+    #         if $self->_mq->get_channel_max()
+    #             && $self->_mq->get_channel_max() < $next;
+    # },
     default => 0,
     traits  => ['Counter'],
     handles => {
@@ -57,7 +59,7 @@ sub channel {
 }
 
 sub queue      { shift->channel->queue(@_); }
-sub disconnect { shift->_mq_disconnect(); }
+sub disconnect { shift->_mq->disconnect(); }
 sub DEMOLISH   { shift->disconnect; }
 
 __PACKAGE__->meta->make_immutable;
