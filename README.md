@@ -18,7 +18,7 @@
 
     sub receive {
         my $q = $mq->queue( name => 'hello');
-        $q->on_message(sub { say $_->{body} });
+        $q->handle_message(sub { say $_->{body} });
     }
 
 ## Description

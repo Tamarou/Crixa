@@ -33,17 +33,35 @@ has channel_id => (
     }
 );
 
+has channels => (
+    isa     => 'ArrayRef',
+    traits  => ['Array'],
+    lazy    => 1,
+    default => sub { [] },
+    handles => {
+        _get_channel    => 'get',
+        _add_channel    => 'push',
+        _remove_channel => 'delete',
+    }
+);
+
 sub channel {
     my $self = shift;
-    Crixa::Channel->new(
+    return $self->_get_channel(@_) if @_;
+    my $c = Crixa::Channel->new(
         id => $self->next_channel_id,
-        @_, _mq => $self->_mq,
+        @_,    # the rest of the args
+        _mq => $self->_mq,
     );
+    $self->_add_channel($c);
+    return $c;
 }
 
 sub queue { shift->channel->queue(@_); }
 
-sub DEMOLISH { shift->_mq_disconnect(); }
+sub disconnect { shift->_mq_disconnect(); }
+
+sub DEMOLISH { shift->disconnect; }
 
 __PACKAGE__->meta->make_immutable;
 1;
@@ -63,6 +81,6 @@ __END__
     
     sub receive {
         my $q = $mq->queue( name => 'hello');
-        $q->on_message(sub { say $_->{body} });
+        $q->handle_message(sub { say $_->{body} });
     }
     
