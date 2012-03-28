@@ -24,11 +24,10 @@ sub basic_qos {
 
 sub queue {
     my $self = shift;
-    Crixa::Queue->new(
-        @_,
-        _mq     => $self->_mq,
-        channel => $self,
-    );
+    my $args = @_ == 1 ? $_[0] : {@_};
+    $args->{_mq}     = $self->_mq;
+    $args->{channel} = $self;
+    Crixa::Queue->new($args);
 }
 
 sub ack { $_[0]->_mq_ack( shift->id, @_ ) }
