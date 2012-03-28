@@ -64,6 +64,10 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+=head1 NAME 
+
+Crixa
+
 =head1 SYNOPSIS 
 
     use Crixa;
@@ -109,7 +113,7 @@ The password for the (optional) username.
 
 =head1 METHODS
 
-=head2 connection 
+=head2 connect 
 
 Create a new connection to a RabbitMQ server. It takes a hash or hashref of named parameters.
 
@@ -140,8 +144,10 @@ Return a newly configured queue, this will autovivify a channel.
 
 =head2 disconnect
 
-Disconnect from the server. This is called implicitly by C<DESTROY> so
+Disconnect from the server. This is called implicitly by C<DEMOLISH> so
 normally there should be no need to do this explicitly.
+
+=head2 DEMOLISH
 
 =head1 SEE ALSO
 

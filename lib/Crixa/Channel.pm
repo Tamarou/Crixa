@@ -2,6 +2,8 @@ package Crixa::Channel;
 use Moose;
 use namespace::autoclean;
 
+# ABSTRACT: A Crixa Channel
+
 use Crixa::Queue;
 use Crixa::Exchange;
 
@@ -54,3 +56,33 @@ sub publish {
 
 1;
 __END__
+
+=head1 NAME
+
+Crixa::Channel
+
+=head1 DESCRIPTION
+
+A class to represent Channels in Crixa.
+
+=head1 ATTRIBUTES
+
+=head2 id 
+
+Required.
+
+=head1 METHODS
+
+=head2 BUILD 
+
+=head2 id
+
+=head2 exchange
+
+=head2 queue
+
+=head2 basic_qos
+
+=head2 ack
+
+=head2 publish

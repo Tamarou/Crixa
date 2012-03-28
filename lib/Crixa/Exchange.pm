@@ -3,6 +3,8 @@ use 5.10.0;
 use Moose;
 use namespace::autoclean;
 
+# ABSTRACT: A Crixa Exchange
+
 with qw(Crixa::Role::RabbitMQ);
 
 has name => ( isa => 'Str', is => 'ro', required => 1 );
@@ -12,14 +14,13 @@ has channel => (
     is       => 'ro',
     required => 1,
     handles  => {
-        channel_id => 'id',
         queue      => 'queue'
     },
 );
 
 sub BUILD {
     my ( $s, $args ) = @_;
-    $s->_mq->exchange_declare( $s->channel_id, delete $args->{name}, $args );
+    $s->_mq->exchange_declare( $s->channel->id, delete $args->{name}, $args );
 }
 
 around queue => sub {
@@ -28,7 +29,7 @@ around queue => sub {
     my $q        = $self->$next(%$args);
     my @bindings = delete $args->{bindings} // ('');
     for my $binding (@bindings) {
-        $self->_mq_queue_bind( $self->channel_id, $q->name, $self->name,
+        $self->_mq_queue_bind( $self->channel->id, $q->name, $self->name,
             $binding );
     }
     return $q;
@@ -43,3 +44,35 @@ sub publish {
 
 1;
 __END__
+
+=head1 NAME
+
+Crixa::Exchange
+
+=head1 DESCRIPTION
+
+A class to represent Exchanges in Crixa.
+
+=head1 ATTRIBUTES
+
+=head2 name
+
+=head2 channel
+
+Required.
+
+Required
+
+=head2 channel
+
+=head1 METHODS 
+
+=head2 BUILD
+
+=head2 name
+
+=head2 channel
+
+=head2 queue
+
+=head2 publish
