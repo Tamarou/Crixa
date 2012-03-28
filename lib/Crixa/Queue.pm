@@ -36,25 +36,9 @@ sub handle_message {
 
 sub publish {
     my $self = shift;
-    use DDP;
-    p @_;
-    if ( @_ == 1 && ref $_[0] eq 'HASH' ) {
-        my $props = delete $_[0]->{props};
-        return $self->_mq_publish(
-            $self->channel_id,
-            delete $_[0]->{routing_key} // $self->name,
-            delete $_[0]->{body} || confess "need to supply a body",
-            $_[0],
-            $props
-        );
-    }
-    elsif ( @_ == 1 && !ref $_[0] ) {
-        return $self->_mq_publish( $self->channel_id, $self->name, $_[0], {},
-        );
-    }
-    else {
-        confess "I'm not sure what to do with @_";
-    }
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
+    $args->{routing_key} //= $self->name;
+    $self->channel->publish($args);
 }
 
 1;

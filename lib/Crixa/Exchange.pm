@@ -33,30 +33,12 @@ around queue => sub {
     }
     return $q;
 };
-use DDP;
 
 sub publish {
     my $self = shift;
-    my $args = @_ == 1 ? $_[0] : {@_};
-
-    if ( ref $args eq 'HASH' ) {
-        $args->{exchange} ||= $self->name;
-        my $props = delete $args->{props};
-        return $self->_mq_publish(
-            $self->channel_id,
-            delete $args->{routing_key} // '',
-            delete $args->{body} || confess("need to supply a body"),
-            $args, $props
-        );
-    }
-    elsif ( !ref $args ) {
-        return $self->_mq_publish( $self->channel_id, '', $args,
-            { exchange => $self->name },
-        );
-    }
-    else {
-        confess "I'm not sure what to do with $args";
-    }
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
+    $args->{exchange} //= $self->name;
+    $self->channel->publish($args);
 }
 
 1;
