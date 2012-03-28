@@ -20,12 +20,6 @@ has [qw(user password)] => ( isa => 'Str', is => 'ro' );
 
 has channel_id => (
     isa     => 'Int',
-    # trigger => sub {
-    #     my ( $self, $next ) = @_;
-    #     confess "Cannot exceed max channel id"
-    #         if $self->_mq->get_channel_max()
-    #             && $self->_mq->get_channel_max() < $next;
-    # },
     default => 0,
     traits  => ['Counter'],
     handles => {

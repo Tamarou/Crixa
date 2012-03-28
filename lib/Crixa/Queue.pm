@@ -8,8 +8,7 @@ use namespace::autoclean;
 with qw(Crixa::Role::RabbitMQ);
 
 has name => (
-
-    #    isa    => 'Str',
+    isa    => 'Str',
     reader => 'name',
     writer => '_name'
 );
