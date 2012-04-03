@@ -2,12 +2,12 @@ use Test::More;
 use Test::Requires qw( Net::RabbitMQ );
 use Crixa;
 
-unless ($ENV{CRIXA_HOST}) { 
-    plan skip_all => 'You must set the CRIXA_HOST environement vairable to run these tests';
+unless ($ENV{RABBITMQ_HOST}) { 
+    plan skip_all => 'You must set the RABBITMQ_HOST environement vairable to run these tests';
     exit;
 }
 
-my $mq = Crixa->connect( host => $ENV{CRIXA_HOST} );
+my $mq = Crixa->connect( host => $ENV{RABBITMQ_HOST} );
 
 my $channel = $mq->channel;
 my $exchange = $channel->exchange( name => 'order' );
