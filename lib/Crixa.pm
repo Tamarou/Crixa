@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 use Crixa::Channel;
 
-with qw(Crixa::Role::RabbitMQ);
+with qw(Crixa::Engine);
 
 sub connect {
     my $o = shift->new(@_);
@@ -45,8 +45,8 @@ sub channel {
     my $self = shift;
     my $args = @_ == 1 ? $_[0] : {@_};
     return $self->_get_channel($args) unless ref $args;
-    $args->{id}  = $self->_next_channel_id;
-    $args->{_mq} = $self->_mq;
+    $args->{id}     = $self->_next_channel_id;
+    $args->{engine} = $self->engine;
     my $c = Crixa::Channel->new($args);
     $self->_add_channel($c);
     return $c;

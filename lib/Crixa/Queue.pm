@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 # ABSTRACT: A Crixa Queue
 
-with qw(Crixa::Role::RabbitMQ);
+with qw(Crixa::Engine);
 
 has name => (
     isa    => 'Str',

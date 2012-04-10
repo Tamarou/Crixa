@@ -2,7 +2,11 @@ use Test::More;
 use Test::Requires qw( Test::Net::RabbitMQ );
 use Crixa;
 
-my $mq = Crixa->connect( host => '', _mq => Test::Net::RabbitMQ->new() );
+my $mq = Crixa->connect(
+    host => '',
+    engine =>
+        Crixa::Engine::RabbitMQ->new( _mq => Test::Net::RabbitMQ->new() )
+);
 
 my $channel = $mq->channel;
 my $exchange = $channel->exchange( name => 'order' );
