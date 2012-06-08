@@ -26,14 +26,22 @@ sub BUILD {
     $_[0]->_name($name);
 }
 
+sub check_for_message {
+    my ( $self, $args ) = @_;
+    $args //= {};
+    $self->_mq->get( $self->channel->id, $self->name, $args );
+}
+
+sub wait_for_message {
+    my ( $self, $args ) = @_;
+    my $msg;
+    do { $msg = $self->check_for_message($args); } until ( defined $msg );
+    return $msg;
+}
+
 sub handle_message {
     my ( $self, $handler, $args ) = @_;
-    my $msg;
-    $args //= {};
-    do {
-        $msg = $self->_mq->get( $self->channel->id, $self->name, $args );
-    } until ( defined $msg );
-
+    my $msg = $self->wait_for_message($args);
     for ($msg) { return $handler->($msg) }
     confess 'Something unusual happened.';
 }
