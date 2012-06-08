@@ -94,6 +94,13 @@ different ideas would translate I found myself disliking the default
 L<Net::RabbitMQ> API. That isn't to say it's I<bad>, just really bare bones.
 So I went and wrote the API I wanted to use, influenced by he Pika examples.
 
+=head1 WARNING
+
+CRIXA IS ALPHA CODE. THE API MAY CHANGE.
+
+One of the planned changes is to add asyncronous communication with RabbitMQ
+and that *may* involve a lot of changes.
+
 =head1 ATTRIBUTES 
 
 =head2 host (required)
@@ -134,6 +141,10 @@ An optional password.
 
 Return the channel associated with C<$id>. If C<$id> isn't defined it returns
 a newly created channel.
+
+=head2 exhcange(%args)
+
+Return a newly configured exchange. This will autovivify a channel.
 
 =head2 queue(%args)
 

@@ -78,8 +78,26 @@ Required.
 
 =head2 name
 
+The queue name.
+
 =head2 channel
+
+The channel this queue is configured for.
+
+=head2 check_for_message
+
+Checks the queue for a message. This doesn't block but instead will return
+undef if the queue is empty.
+
+=head2 wait_for_message
+
+Checks the queue for a message and blocks until one appears.
 
 =head2 handle_message
 
+Takes a callback and executes the callback when the next message appears in
+the queue.
+
 =head2 publish
+
+Send a new message to this queue.
