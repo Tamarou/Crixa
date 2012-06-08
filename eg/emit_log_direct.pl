@@ -2,9 +2,8 @@
 use 5.12.1;
 use Crixa;
 
-my $mq       = Crixa->connect( host => "localhost", );
-my $chan     = $mq->channel;
-my $exchange = $chan->exchange(
+my $mq = Crixa->connect( host => "localhost", );
+my $exchange = $mq->exchange(
     name          => 'direct_logs',
     exchange_type => 'direct'
 );
