@@ -53,6 +53,7 @@ sub channel {
 }
 
 sub queue      { shift->channel->queue(@_); }
+sub exchange   { shift->channel->exchange(@_) }
 sub disconnect { shift->_mq->disconnect(); }
 sub DEMOLISH   { shift->disconnect; }
 
