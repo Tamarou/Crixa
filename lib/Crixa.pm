@@ -142,7 +142,7 @@ An optional password.
 Return the channel associated with C<$id>. If C<$id> isn't defined it returns
 a newly created channel.
 
-=head2 exhcange(%args)
+=head2 exchange(%args)
 
 Return a newly configured exchange. This will autovivify a channel.
 
