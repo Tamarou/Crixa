@@ -17,6 +17,7 @@ sub connect {
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
+has [qw(port)] => ( isa => 'Int', is => 'ro' );
 
 has channel_id => (
     isa     => 'Int',

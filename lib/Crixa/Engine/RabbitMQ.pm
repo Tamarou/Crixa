@@ -12,15 +12,11 @@ sub _build__mq { Net::RabbitMQ->new; }
 
 sub _connect_mq {
     my ( $self, $config ) = @_;
-    my @args = ( $config->host );
-    if ( $config->user && $config->password ) {
-        push @args => {
-            user     => $config->user,
-            password => $config->password
-        };
+    my %args;
+    for (qw( user password port )) {
+        $args{$_} = $config->$_ if defined $config->$_;
     }
-    else { push @args => {} }
-    $self->_mq->connect(@args);
+    $self->_mq->connect($config->host,\%args);
 }
 
 with qw(Crixa::Engine::API);    # at the end so we pick up _mq
