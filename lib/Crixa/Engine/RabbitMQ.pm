@@ -1,8 +1,8 @@
 package Crixa::Engine::RabbitMQ;
+# ABSTRACT: A Class for managing the RabbitMQ instance
+
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Class for managing the RabbitMQ instance
 
 use Net::RabbitMQ;
 

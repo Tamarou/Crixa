@@ -1,9 +1,9 @@
 package Crixa::Queue;
+# ABSTRACT: A Crixa Queue
+
 use 5.10.0;
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Crixa Queue
 
 with qw(Crixa::Engine);
 

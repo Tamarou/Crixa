@@ -1,9 +1,9 @@
 package Crixa::Exchange;
+# ABSTRACT: A Crixa Exchange
+
 use 5.10.0;
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Crixa Exchange
 
 with qw(Crixa::Engine);
 

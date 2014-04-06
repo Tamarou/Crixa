@@ -1,8 +1,8 @@
 package Crixa::Channel;
+# ABSTRACT: A Crixa Channel
+
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Crixa Channel
 
 use Crixa::Queue;
 use Crixa::Exchange;

@@ -1,8 +1,8 @@
 package Crixa;
+# ABSTRACT: A Cleaner API for Net::RabbitMQ
+
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Cleaner API for Net::RabbitMQ
 
 use Crixa::Channel;
 
