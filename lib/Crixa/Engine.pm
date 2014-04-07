@@ -1,4 +1,6 @@
 package Crixa::Engine;
+# ABSTRACT: Crixa::Engine
+
 use Moose::Role;
 use namespace::autoclean;
 
@@ -16,3 +18,4 @@ sub _build_engine { Crixa::Engine::RabbitMQ->new() }
 
 1;
 __END__
+

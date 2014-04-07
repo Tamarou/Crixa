@@ -1,8 +1,8 @@
 package Crixa;
+# ABSTRACT: A Cleaner API for Net::RabbitMQ
+
 use Moose;
 use namespace::autoclean;
-
-# ABSTRACT: A Cleaner API for Net::RabbitMQ
 
 use Crixa::Channel;
 
@@ -17,6 +17,7 @@ sub connect {
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
+has [qw(port)] => ( isa => 'Int', is => 'ro' );
 
 has channel_id => (
     isa     => 'Int',
