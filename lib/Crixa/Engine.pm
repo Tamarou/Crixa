@@ -19,3 +19,9 @@ sub _build_engine { Crixa::Engine::RabbitMQ->new() }
 1;
 __END__
 
+=head1 NAME Crixa::Engine
+
+=head1 DESCRIPTION
+
+This is used internally by Crixa. There are no user accessible parts here.
+
