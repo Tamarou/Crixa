@@ -1,6 +1,9 @@
 Changelog for Crixa
 
-0.05 2014-04-06T01:40:26
+0.05 2014-04-08T15:47:57
+ - fix more pod warnings (Chris Prather)
+ - Fixed PodWeaver warnings, fixed Dist::Zilla problem with Changes file
+   (Torsten Raudssus)
  - Adding support for port (Torsten Raudssus)
 
 0.04 2012-06-08T01:40:46Z
