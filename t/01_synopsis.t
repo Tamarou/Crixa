@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 use Test::More;
 use Test::Requires qw( Test::Net::RabbitMQ );
 use Crixa;
