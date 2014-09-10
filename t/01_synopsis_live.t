@@ -1,5 +1,4 @@
 use Test::More;
-use Test::Requires qw( Net::RabbitMQ );
 use Crixa;
 
 unless ($ENV{RABBITMQ_HOST}) { 
