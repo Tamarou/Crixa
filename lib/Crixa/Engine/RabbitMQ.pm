@@ -4,11 +4,11 @@ package Crixa::Engine::RabbitMQ;
 use Moose;
 use namespace::autoclean;
 
-use Net::RabbitMQ;
+use Net::AMQP::RabbitMQ;
 
 has _mq => ( is => 'ro', lazy => 1, builder => '_build__mq' );
 
-sub _build__mq { Net::RabbitMQ->new; }
+sub _build__mq { Net::AMQP::RabbitMQ->new; }
 
 sub _connect_mq {
     my ( $self, $config ) = @_;

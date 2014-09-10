@@ -1,5 +1,5 @@
 package Crixa;
-# ABSTRACT: A Cleaner API for Net::RabbitMQ
+# ABSTRACT: A Cleaner API for Net::AMQP::RabbitMQ
 
 use Moose;
 use namespace::autoclean;
@@ -92,7 +92,7 @@ Crixa
 The RabbitMQ docs use Python's Pika library for most of their examples. When I
 was translating the tutorial examples to Perl so I could get a grasp on how
 different ideas would translate I found myself disliking the default
-L<Net::RabbitMQ> API. That isn't to say it's I<bad>, just really bare bones.
+L<Net::AMQP::RabbitMQ> API. That isn't to say it's I<bad>, just really bare bones.
 So I went and wrote the API I wanted to use, influenced by he Pika examples.
 
 =head1 WARNING
@@ -162,6 +162,6 @@ normally there should be no need to do this explicitly.
 
 =over 4
 
-=item L<Net::RabbitMQ>
+=item L<Net::AMQP::RabbitMQ>
 
 =back
