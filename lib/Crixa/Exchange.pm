@@ -16,9 +16,23 @@ has channel => (
     handles  => { queue => 'queue' },
 );
 
+has exchange_type => (
+    isa       => 'Str',
+    is        => 'ro',
+    predicate => '_has_exchange_type',
+);
+
+for my $name (qw( passive durable auto_delete )) {
+    has $name => (
+        is        => 'ro',
+        isa       => 'Bool',
+        predicate => '_has_' . $name,
+    );
+}
+
 sub BUILD {
-    my ( $s, $args ) = @_;
-    $s->_mq->exchange_declare( $s->channel->id, delete $args->{name}, $args );
+    my $s = shift;
+    $s->_mq->exchange_declare( $s->channel->id, $s->name, $s->_props );
 }
 
 around queue => sub {
@@ -47,6 +61,17 @@ sub delete {
     $args //= {};
 
     $self->_mq->exchange_delete( $self->channel->id, $self->name, $args );
+}
+
+sub _props {
+    my $self = shift;
+
+    my %props = map { $_ => $self->$_() } grep {
+        my $pred = '_has_' . $_;
+        $self->$pred()
+    } qw( exchange_type passive durable auto_delete );
+
+    return \%props;
 }
 
 1;
