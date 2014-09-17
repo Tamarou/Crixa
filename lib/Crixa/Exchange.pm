@@ -42,6 +42,13 @@ sub publish {
     $self->channel->publish($args);
 }
 
+sub delete {
+    my ( $self, $args ) = @_;
+    $args //= {};
+
+    $self->_mq->exchange_delete( $self->channel->id, $self->name, $args );
+}
+
 1;
 __END__
 
