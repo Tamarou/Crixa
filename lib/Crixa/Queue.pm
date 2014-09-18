@@ -46,11 +46,6 @@ sub handle_message {
     confess 'Something unusual happened.';
 }
 
-sub ack_message {
-    my $self = shift;
-    $self->_mq->ack( $self->channel->id, @_ );
-}
-
 sub publish {
     my $self = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
