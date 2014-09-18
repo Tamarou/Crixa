@@ -27,7 +27,7 @@ sub basic_qos {
 sub queue {
     my $self = shift;
     my $args = @_ == 1 ? shift : {@_};
-    $args->{engine}     = $self->engine;
+    $args->{engine}  = $self->engine;
     $args->{channel} = $self;
     Crixa::Queue->new($args);
 }
