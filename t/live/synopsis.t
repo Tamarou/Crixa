@@ -1,19 +1,17 @@
 use strict;
 use warnings;
 
-use Test::More;
-use Crixa;
+use lib 't/lib';
 
-unless ($ENV{RABBITMQ_HOST}) { 
-    plan skip_all => 'You must set the RABBITMQ_HOST environement vairable to run these tests';
-    exit;
-}
+use Crixa;
+use Test::Crixa;
+use Test::More;
 
 my $mq = Crixa->connect( host => $ENV{RABBITMQ_HOST} );
 
 my $channel = $mq->channel;
-my $exchange = $channel->exchange( name => 'order' );
-my $q = $exchange->queue( name => 'new-orders', bindings => ['order.new'] );
+my $exchange = $channel->exchange( name => prefixed_name('order') );
+my $q = $exchange->queue( name => prefixed_name('new-orders'), bindings => ['order.new'] );
 $exchange->publish( { routing_key => 'order.new', body => 'hello!' } );
 
 $q->handle_message(
@@ -29,5 +27,8 @@ $q->handle_message(
         ::cmp_ok( $_->{body}, 'eq', 'hello!', 'got the message' );
     }
 );
+
+$q->delete;
+$exchange->delete;
 
 done_testing;
