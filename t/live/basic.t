@@ -3,12 +3,10 @@ use warnings;
 
 use lib 't/lib';
 
-use Crixa;
 use Test::Crixa;
 use Test::More;
 
-my $mq = Crixa->connect( host => $ENV{RABBITMQ_HOST} );
-
+my $mq = live_crixa();
 my $channel = $mq->channel;
 my $exchange = $channel->exchange( name => prefixed_name('order') );
 my $q = $exchange->queue( name => prefixed_name('new-orders'), bindings => ['order.new'] );

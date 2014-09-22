@@ -1,16 +1,12 @@
 use strict;
 use warnings;
 
+use lib 't/lib';
+
+use Test::Crixa;
 use Test::More;
-use Test::Requires qw( Test::Net::RabbitMQ );
-use Crixa;
 
-my $mq = Crixa->connect(
-    host => '',
-    engine =>
-        Crixa::Engine::RabbitMQ->new( _mq => Test::Net::RabbitMQ->new() )
-);
-
+my $mq = mock_crixa();
 my $channel = $mq->channel;
 my $exchange = $channel->exchange( name => 'order' );
 my $q = $exchange->queue( name => 'new-orders', bindings => ['order.new'] );
