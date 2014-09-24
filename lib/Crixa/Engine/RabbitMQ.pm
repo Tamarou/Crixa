@@ -16,7 +16,7 @@ sub _connect_mq {
     for (qw( user password port )) {
         $args{$_} = $config->$_ if defined $config->$_;
     }
-    $self->_mq->connect($config->host,\%args);
+    $self->_mq->connect( $config->host, \%args );
 }
 
 with qw(Crixa::Engine::API);    # at the end so we pick up _mq
