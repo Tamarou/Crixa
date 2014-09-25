@@ -19,7 +19,7 @@ has host => ( isa => 'Str', is => 'ro', required => 1, );
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
 has [qw(port)] => ( isa => 'Int', is => 'ro' );
 
-has channel_id => (
+has _channel_id => (
     isa     => 'Int',
     default => 0,
     traits  => ['Counter'],
@@ -30,103 +30,74 @@ has channel_id => (
     }
 );
 
-has channels => (
-    isa     => 'ArrayRef',
-    traits  => ['Array'],
-    lazy    => 1,
-    default => sub { [] },
-    handles => {
-        _get_channel    => 'get',
-        _add_channel    => 'push',
-        _remove_channel => 'delete',
-    }
-);
-
-sub channel {
+sub new_channel {
     my $self = shift;
-    my $args = @_ == 1 ? $_[0] : {@_};
-    return $self->_get_channel($args) unless ref $args;
-    $args->{id}     = $self->_next_channel_id;
-    $args->{engine} = $self->engine;
-    my $c = Crixa::Channel->new($args);
-    $self->_add_channel($c);
-    return $c;
+
+    return Crixa::Channel->new(
+        id     => $self->_next_channel_id,
+        engine => $self->engine,
+    );
 }
 
-sub queue      { shift->channel->queue(@_); }
-sub exchange   { shift->channel->exchange(@_) }
 sub disconnect { shift->_mq->disconnect(); }
 sub DEMOLISH   { shift->disconnect; }
 
 __PACKAGE__->meta->make_immutable;
+
 1;
+
 __END__
 
-=head1 NAME 
-
-Crixa
-
-=head1 SYNOPSIS 
+=head1 SYNOPSIS
 
     use Crixa;
-    
-    my $mq = Crixa->connect( host => 'localhost');
-    
+
+    my $mq       = Crixa->connect( host => 'localhost' );
+    my $channel  = $mq->channel;
+    my $exchange = $channel->exchange( name => 'hello' );
+
     sub send {
-        my $q = $mq->queue( name => 'hello');
-        $q->publish('Hello World');
+        $exchange->publish('Hello World');
     }
-    
+
+    my $queue = $exchange->queue( name => 'hello' );
+
     sub receive {
-        my $q = $mq->queue( name => 'hello');
-        $q->handle_message(sub { say $_->{body} });
+        $queue->handle_message( sub { say $_->{body} } );
     }
 
 =head1 DESCRIPTION
 
-    All the world will be your enemy, Prince of a Thousand enemies. And when 
+    All the world will be your enemy, Prince of a Thousand enemies. And when
     they catch you, they will kill you. But first they must catch you; digger,
     listener, runner, Prince with the swift warning. Be cunning, and full of
     tricks, and your people will never be destroyed. -- Richard Adams
 
-The RabbitMQ docs use Python's Pika library for most of their examples. When I
-was translating the tutorial examples to Perl so I could get a grasp on how
-different ideas would translate I found myself disliking the default
-L<Net::AMQP::RabbitMQ> API. That isn't to say it's I<bad>, just really bare bones.
-So I went and wrote the API I wanted to use, influenced by he Pika examples.
+This module provides a more natural API over L<Net::AMQP::RabbitMQ>, with
+separate objects for channels, exchanges, and queues.
 
 =head1 WARNING
 
-CRIXA IS ALPHA CODE. THE API MAY CHANGE.
-
-One of the planned changes is to add asyncronous communication with RabbitMQ
-and that *may* involve a lot of changes.
-
-=head1 ATTRIBUTES 
-
-=head2 host (required)
-
-The host with the RabbitMQ instance to connect to.
-
-=head2 user
-
-A user name to connect with.
-
-=head2 password
-
-The password for the (optional) username.
+B<Crixa is still in development and the API may change in the future!>
 
 =head1 METHODS
 
-=head2 connect 
+This class provides the following methods:
 
-Create a new connection to a RabbitMQ server. It takes a hash or hashref of named parameters.
+=head2 Crixa->connect(...)
+
+Creates a new connection to a RabbitMQ server. It takes a hash or hashref of
+named parameters.
 
 =over 4
 
 =item host => $hostname
 
-A required hostname to connect to.
+Ths hostname to connect to. Required.
+
+=item port => $post
+
+An optional port.
 
 =item user => $user
 
@@ -138,30 +109,37 @@ An optional password.
 
 =back
 
-=head2 channel ($id | \%args )
+=head2 $crixa->new_channel
 
-Return the channel associated with C<$id>. If C<$id> isn't defined it returns
-a newly created channel.
+Returns a new L<Crixa::Channel> object.
 
-=head2 exchange(%args)
+You can use the channel to create exchanges and queues.
 
-Return a newly configured exchange. This will autovivify a channel.
-
-=head2 queue(%args)
-
-Return a newly configured queue, this will autovivify a channel.
-
-=head2 disconnect
+=head2 $crixa->disconnect
 
 Disconnect from the server. This is called implicitly by C<DEMOLISH> so
 normally there should be no need to do this explicitly.
 
-=head2 DEMOLISH
+=head2 $crixa->host
+
+Returns the port passed to the constructor, if nay.
+
+=head2 $crixa->user
+
+Returns the user passed to the constructor, if any.
+
+=head2 $crixa->password
+
+Returns the password passed to the constructor, if any.
 
 =head1 SEE ALSO
 
-=over 4
+This module uses L<Net::AMQP::RabbitMQ> under the hood, though it does not
+expose everything provided by its API.
 
-=item L<Net::AMQP::RabbitMQ>
+The best documentation we've found on RabbitMQ (and AMQP) concepts is the
+Bunny documentation at http://rubybunny.info/articles/guides.html. We strongly
+recommend browsing this to get a better understanding of how RabbitMQ works,
+what different options for exchanges, queues, and messages mean, and more.
 
 =back

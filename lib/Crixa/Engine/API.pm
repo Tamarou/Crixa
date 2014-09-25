@@ -1,5 +1,5 @@
 package Crixa::Engine::API;
-# ABSTRACT: Crixa::Engine::API
+# ABSTRACT: For internal use only
 
 use Moose::Role;
 use namespace::autoclean;
@@ -8,8 +8,6 @@ requires qw(_mq _connect_mq);
 
 1;
 __END__
-
-=head1 NAME Crixa::Engine::API
 
 =head1 DESCRIPTION
 

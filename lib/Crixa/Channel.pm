@@ -34,55 +34,91 @@ sub queue {
 
 sub ack { $_[0]->_mq->ack( shift->id, @_ ) }
 
-sub publish {
-    my $self = shift;
-    my $args = @_ == 1 ? $_[0] : {@_};
-    if ( ref $args eq 'HASH' ) {
-        my $props = delete $args->{props};
-        return $self->_mq->publish(
-            $self->id,
-            delete $args->{routing_key} // '',
-            delete $args->{body} || confess("need to supply a body"),
-            $args, $props
-        );
-    }
-    elsif ( !ref $args ) {
-        return $self->_mq->publish( $self->id, '', $args, {}, );
-    }
-    else {
-        confess "I'm not sure what to do with $args";
-    }
-}
-
 1;
 __END__
 
-=head1 NAME
-
-Crixa::Channel
-
 =head1 DESCRIPTION
 
-A class to represent Channels in Crixa.
+This class represents a channel. A channel is a lot like a socket. You will
+probably want to have a unique channel per process or thread for your
+application. You may also want to have separate channels for publishing and
+consuming messages.
 
-=head1 ATTRIBUTES
+It is safe (and encouraged) to keep the same channel open over a long period
+of time for publishing or consuming messages. There is no need to create new
+channels on a regular basis.
 
-=head2 id 
+Also note that message delivery tags are scoped to the channel on which a
+message is delivered, and therefore message acks must go back to that same
+channel.
 
-Required.
+Channels are created by calling the C<< Crixa->new_channel >> method.
 
 =head1 METHODS
 
-=head2 BUILD 
+This class provides the following methods:
 
-=head2 id
+=head2 $channel->exchange(...)
 
-=head2 exchange
+This method creates a new L<Crixa::Exchange> object. Any parameters passed to
+this method are passed directly to the L<Crixa::Exchange> constructor, either
+as a hash or hashref. See the L<Crixa::Exchange> documentation for more
+details.
 
-=head2 queue
+=head2 $channel->queue(...)
 
-=head2 basic_qos
+This method creates a new L<Crixa::Queue> object. Any parameters passed to
+this method are passed directly to the L<Crixa::Queue> constructor, either as
+a hash or hashref. See the L<Crixa::Queue> documentation for more details.
 
-=head2 ack
+=head2 $channel->basic_qos(...)
 
-=head2 publish
+This method sets quality of service flags for the channel. This method
+takes a hash or hash reference with the following keys:
+
+=over 4
+
+=item * prefetch_count => $count
+
+If this is set, then the channel will fetch C<$count> additional messages to
+the client when it is consuming messages, rather than sending them down the
+socket one at a time.
+
+=item * prefetch_size => $size
+
+Set the maxmimum number of I<bytes> that will be prefetched. If both this and
+C<prefetch_count> are set then the smaller of the two wins.
+
+=item * global => $bool
+
+If this is true, then the QoS settings apply to all consumers on this
+channel. If it is false, then it only applies to new consumers created after
+this is set.
+
+In Crixa, a new AMQP consumer is created whenever you call any methods to get
+messages on a L<Crixa::Queue> object, so this setting doesn't really matter.
+
+=back
+
+Note that prefetching messages is only done when the queue is created in "no
+ack" mode (or "auto ack" if you prefer to think of it that way).
+
+=head2 $channel->ack(...)
+
+This method acknowledges delivery of a message received on this channel.
+
+It accepts two positional arguments. The first is the delivery tag for the
+message, which is required. The second is the "multiple" flag. If this is
+true, it means that you are acknowledging all messages up to the given
+delivery tag. It defaults to false.
+
+=head2 $channel->id
+
+This returns the channel's unique id. This is a positive integer.
+
+=head2 Crixa::Channel->new(...)
+
+Don't call this method directly. Instead, call C<new_channel> on a connected
+L<Crixa> object.
+
+=cut

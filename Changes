@@ -1,6 +1,20 @@
 Changelog for Crixa
 
-0.05 2014-04-08T15:47:57
+0.06 2014-09-24T16:18:52
+ - Add more test plugins (Dave Rolsky)
+ - Add mock_crixa and live_crixa functions to Test::Crixa (Dave Rolsky)
+ - Remove Queue->ack_message method (Dave Rolsky)
+ - Rename tests (Dave Rolsky)
+ - Move live tests to t/live (Dave Rolsky)
+ - Small code formatting tweak (Dave Rolsky)
+ - Start adding attributes for all properties (Dave Rolsky)
+ - Add Exchange->delete method (Dave Rolsky)
+ - Add ack_message and delete methods to Queue (Dave Rolsky)
+ - Use strict & warnings in tests (Dave Rolsky)
+ - Replace Net::RabbitMQ with Net::AMQP::RabbitMQ (Dave Rolsky)
+ - Remove Test::Requires for Net::RabbitMQ (Dave Rolsky)
+
+0.05 2014-04-08T15:47:57Z
  - fix more pod warnings (Chris Prather)
  - Fixed PodWeaver warnings, fixed Dist::Zilla problem with Changes file
    (Torsten Raudssus)
