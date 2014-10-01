@@ -144,6 +144,9 @@ This defaults to false.
 If this is true, then the exchange will remain active across server
 restarts.
 
+B<This has nothing to do with whether messages are stored! In order to make
+sure messages are written to disk, you must declare the I<queue> as durable>
+
 This defaults to false.
 
 =item * auto_delete => $bool
@@ -276,6 +279,11 @@ instead of encoding similar information in the message body or in the
 C<headers> property.
 
 =back
+
+B<Note that if you publish a message and there is no queue bound to the
+exchange which can receive that message, the message will be discarded. This
+means you must create your exchanges and queues I<before> you publish any
+messages.>.
 
 =head2 $exchange->queue(...)
 
