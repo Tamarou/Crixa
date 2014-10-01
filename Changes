@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.06 2014-10-01
+
   [BACKWARDS INCOMPATIBILITIES]
 
   * Switched from using Net::RabbitMQ to Net::AMQP::RabbitMQ. The former no
