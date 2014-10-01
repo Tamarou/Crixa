@@ -1,6 +1,50 @@
-Changelog for Crixa
+{{$NEXT}}
 
-0.05 2014-04-08T15:47:57
+  [BACKWARDS INCOMPATIBILITIES]
+
+  * Switched from using Net::RabbitMQ to Net::AMQP::RabbitMQ. The former no
+    longer passes its tests with recent versions of RabbitMQ.
+
+  * The Crixa class no longer has a ->channels method and it no longer stores
+    channels internally. Instead, you call $crixa->new_channel whenever you
+    want a new channel.
+
+  * The Crixa class no longer has ->queue or ->exchange methods. This was
+    convenient, but made the handling of channels really confusing. Instead,
+    you should create a channel and use that to create queues and exchanges.
+
+  * Removed the Crixa::Channel->publish method. Use Crixa::Exchange objects to
+    publish methods instead. If you really want to publish without an exchange
+    name, you can create an exchange object with an empty string as its name.
+
+  * Removed the Crixa::Queue->publish method. This really doesn't make sense,
+    since you can't publish to queues. This method would only have worked with
+    certain configurations, and it would have been easy to create an
+    exchange/queue combination where calling Crixa::Queue->publish sent the
+    message to an entirely different queue.
+
+  * The Crixa::Exchange->queue method's "bindings" parameter has been renamed
+    to "routing_keys". This is a better match for how these things are
+    described in the RabbitMQ docs.
+
+  * Messages are now objects. See the Crixa::Message documentation for details.
+
+  [ENHANCEMENTS]
+
+  * Added complete documentation for every class. The docs try to explain
+    RabbitMQ concepts wherever appropriate.
+
+  * Added a Crixa::Exchange->delete method
+
+  * Added a Crixa::Queue->delete method
+
+  * Added a Crixa::Queue->bind method
+
+  * All the settings that can be passed to the constructor for Exchange &
+    Queue objects are now available as object attributes. This includes things
+    like "durable", "auto_delete", etc.
+
+0.05 2014-04-08T15:47:57Z
  - fix more pod warnings (Chris Prather)
  - Fixed PodWeaver warnings, fixed Dist::Zilla problem with Changes file
    (Torsten Raudssus)

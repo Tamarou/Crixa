@@ -5,6 +5,8 @@ use 5.10.0;
 use Moose;
 use namespace::autoclean;
 
+use Crixa::Message;
+
 with qw(Crixa::Engine);
 
 has name => (
@@ -19,85 +21,277 @@ has channel => (
     required => 1,
 );
 
+has passive => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has durable => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has exclusive => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has auto_delete => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 1,
+);
+
 sub BUILD {
-    my $name = $_[0]
-        ->_mq->queue_declare( $_[0]->channel->id, $_[0]->name // '', $_[1] );
-    return if $_[0]->name;
-    $_[0]->_name($name);
+    my $self = shift;
+
+    my $name = $self->_mq->queue_declare(
+        $self->channel->id,
+        $self->name // '',
+        $self->_props,
+    );
+    return if $self->name;
+    $self->_name($name);
 }
 
 sub check_for_message {
-    my ( $self, $args ) = @_;
-    $args //= {};
-    $self->_mq->get( $self->channel->id, $self->name, $args );
+    my $self = shift;
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
+
+    return $self->_inflate_message(
+        $self->_mq->get( $self->channel->id, $self->name, $args ) );
+}
+
+sub _inflate_message {
+    my $self = shift;
+    my $msg = shift;
+
+    return unless defined $msg;
+
+    return Crixa::Message->new( %$msg, channel => $self->channel );
 }
 
 sub wait_for_message {
-    my ( $self, $args ) = @_;
+    my $self = shift;
+
     my $msg;
-    do { $msg = $self->check_for_message($args); } until ( defined $msg );
+    do { $msg = $self->check_for_message(@_); } until ( defined $msg );
     return $msg;
 }
 
 sub handle_message {
-    my ( $self, $handler, $args ) = @_;
+    my $self    = shift;
+    my $handler = shift;
+    my $args    = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
+
     my $msg = $self->wait_for_message($args);
     for ($msg) { return $handler->($msg) }
     confess 'Something unusual happened.';
 }
 
-sub publish {
+sub bind {
     my $self = shift;
-    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
-    $args->{routing_key} //= $self->name;
-    $self->channel->publish($args);
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
+
+    $self->_mq->queue_bind(
+        $self->channel->id,
+        $self->name,
+        $args->{exchange},
+        $args->{routing_key} // $self->name,
+        $args->{headers} // {},
+    );
+}
+
+sub delete {
+    my $self = shift;
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
+
+    $self->_mq->queue_delete( $self->channel->id, $self->name, $args )
+}
+
+sub _props {
+    my $self = shift;
+
+    return { map { $_ => $self->$_() }
+            qw( passive durable exclusive auto_delete ) };
 }
 
 1;
 __END__
 
-=head1 NAME
-
-Crixa::Queue
-
 =head1 DESCRIPTION
 
-A class to represent Queues in Crixa.
-
-=head1 ATTRIBUTES
-
-=head2 name
-
-=head2 channel
-
-Required.
+This class represents a single queue. With RabbitMQ, messages are published to
+exchanges, which then routes the message to one or more queues. You then
+consume those messages from the queue.
 
 =head1 METHODS
 
-=head2 BUILD
+This class provides the following methods:
 
-=head2 name
+=head2 Crixa::Queue->new(...)
 
-The queue name.
+This method creates a new queue object. You should not call this method
+directly under normal circumstances. Instead, you should create a queue by
+calling the C<queue> method on a L<Crixa::Channel> or L<Crixa::Exchange>
+object. However, you need to know what parameters the constructor accepts.
 
-=head2 channel
+=over 4
 
-The channel this queue is configured for.
+=item * name
 
-=head2 check_for_message
+The name of the queue. If none is provided then RabbitMQ will auto-generate a
+name for you.
 
-Checks the queue for a message. This doesn't block but instead will return
-undef if the queue is empty.
+=item * passive => $bool
 
-=head2 wait_for_message
+If this is true, then the constructor will throw an error B<unless the queue
+already exists>.
 
-Checks the queue for a message and blocks until one appears.
+This defaults to false.
 
-=head2 handle_message
+=item * durable => $bool
 
-Takes a callback and executes the callback when the next message appears in
-the queue.
+If this is true, then the queue will remain active across server
+restarts.
 
-=head2 publish
+This defaults to false.
 
-Send a new message to this queue.
+=item * auto_delete => $bool
+
+If this is true, then the queue will be deleted when there are no more
+consumers subscribed to it. The queue initially exists until at least one
+consumer subscribes.
+
+This defaults to false.
+
+=item * exclusive => $bool
+
+If this is true, then the queue is only accessible via the current connection
+and will be deleted when that connection closes.
+
+This defaults to false.
+
+=back
+
+=head2 $queue->check_for_message(...)
+
+This checks the queue for a message. This method does not block. It returns
+C<undef> if there is no message ready. It accepts either a hash or
+hashref with the following keys:
+
+=over 4
+
+=item no_ack => $bool
+
+If this is true, then the message is not acknowledged as it is taken from the
+queue. You will need to explicitly acknowledge it using the C<ack> method on
+the L<Crixa::Channel> object from which the message came.
+
+If this is false, then the message is acknowledged immediately. Calling the
+C<ack> method later with this message's delivery tag will be an error.
+
+This defaults to true.
+
+=back
+
+=head2 $queue->wait_for_message(...)
+
+This blocks until a message is ready. It always returns a single message.
+
+This takes the same parameters as the C<check_for_message> method.
+
+=head2 $queue->handle_message($callback, ...)
+
+This message takes a callback and blocks until the next message. It calls the
+callback with the message as its only argument and returns whatever the
+callback returns.
+
+This takes the same parameters as the C<check_for_message> method after the
+callback.
+
+=head2 $queue->bind(...)
+
+This binds a queue to an exchange. It accepts either a hash or hashref with
+the following keys:
+
+=over 4
+
+=item * exchange
+
+The name of the exchange to which the queue will be bound. This is required.
+
+=item * routing_key
+
+An optional routing key for the binding. If none is given the queue name is
+used instead.
+
+=item * headers
+
+An optional hashref used when binding to a headers matching exchange.
+
+This hashref should contain the headers against which the queue is
+matching.
+
+You can also specify an C<x-match> key of either "any" or "all". If the value
+is "any" then the queue will receive a message when any of the headers in the
+message match those that the queue was bound with. if it is set to "all" then
+all headers in the message must match the binding.
+
+=back
+
+=head2 $queue->delete(...)
+
+This deletes the queue. It accepts either a hash or hashref with the
+following keys:
+
+=over 4
+
+=item * if_unused => $bool
+
+If this is true, then the queue is only deleted if it has no consumers. Given
+the way that Crixa handles getting messages, this is irrelevant if you are
+only using Crixa to communicate with the queue.
+
+This defaults to true.
+
+=item * if_empty => $bool
+
+If this is true, then the queue is only deleted if it is empty.
+
+This defaults to true.
+
+=back
+
+=head2 $queue->name
+
+Returns the queue name.
+
+=head2 $queue->channel
+
+Returns the L<Crixa::Channel> that this queue uses.
+
+=head2 $queue->passive
+
+This returns the passive flag as passed to the constructor or set by a
+default.
+
+=head2 $queue->durable
+
+This returns the durable flag as passed to the constructor or set by a
+default.
+
+=head2 $queue->auto_delete
+
+This returns the auto-delete flag as passed to the constructor or set by a
+default.
+
+=head2 $queue->exclusive
+
+This returns the exclusive flag as passed to the constructor or set by a
+default.
+
+=cut
