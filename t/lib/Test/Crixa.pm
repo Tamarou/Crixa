@@ -6,8 +6,8 @@ use warnings;
 use Crixa::Engine::RabbitMQ;
 use Crixa;
 use Exporter qw( import );
-use Test::More;
-use Test::Requires qw( Test::Net::RabbitMQ );
+use Test::More 0.98;
+use Test::Requires 0.06 qw( Test::Net::RabbitMQ );
 
 our @EXPORT = qw(
     live_crixa
