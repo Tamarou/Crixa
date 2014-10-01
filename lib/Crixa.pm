@@ -142,4 +142,5 @@ Bunny documentation at http://rubybunny.info/articles/guides.html. We strongly
 recommend browsing this to get a better understanding of how RabbitMQ works,
 what different options for exchanges, queues, and messages mean, and more.
 
-=back
+=cut
+
