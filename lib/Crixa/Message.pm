@@ -75,7 +75,7 @@ has delivery_tag => (
 
 has message_count => (
     is       => 'ro',
-    isa      => 'Bool',
+    isa      => 'Int',
     required => 1,
 );
 
