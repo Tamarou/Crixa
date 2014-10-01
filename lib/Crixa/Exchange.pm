@@ -253,7 +253,7 @@ This can either be 1 or 2. A 1 is "non-persistent" and a 2 is
 that it can be recovered across RabbitMQ server restarts.
 
 Note that even if you set the exchange and queue to be durable, you still must
-specify a message as persistent in order for it to be saved!
+specify the C<delivery_mode> as persistent in order for it to be saved!
 
 =item * timestamp => $epoch
 
