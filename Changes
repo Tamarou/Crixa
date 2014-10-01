@@ -1,6 +1,6 @@
 Changelog for Crixa
 
-0.06 2014-09-24T16:18:52
+{{$NEXT}}
  - Add more test plugins (Dave Rolsky)
  - Add mock_crixa and live_crixa functions to Test::Crixa (Dave Rolsky)
  - Remove Queue->ack_message method (Dave Rolsky)
