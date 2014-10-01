@@ -132,6 +132,11 @@ Returns the user passed to the constructor, if any.
 
 Returns the password passed to the constructor, if any.
 
+=head1 SUPPORT
+
+Please report all issues with this code using the GitHub issue tracker at
+L<https://github.com/Tamarou/Crixa/issues>.
+
 =head1 SEE ALSO
 
 This module uses L<Net::AMQP::RabbitMQ> under the hood, though it does not
@@ -143,4 +148,3 @@ recommend browsing this to get a better understanding of how RabbitMQ works,
 what different options for exchanges, queues, and messages mean, and more.
 
 =cut
-
