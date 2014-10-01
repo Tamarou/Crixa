@@ -318,7 +318,7 @@ confirmation from the server. This defaults to false.
 
 =head2 $exchange->name(...)
 
-This returns the exchange name as passed to the contructor.
+This returns the exchange name as passed to the constructor.
 
 =head2 $exchange->channel
 
@@ -326,20 +326,22 @@ Returns the L<Crixa::Channel> that this exchange uses.
 
 =head2 $exchange->exchange_type
 
-This returns the exchange type as passed to the contructor or set by a
+This returns the exchange type as passed to the constructor or set by a
 default.
 
 =head2 $exchange->passive
 
-This returns the passive flag as passed to the contructor or set by a default.
+This returns the passive flag as passed to the constructor or set by a
+default.
 
 =head2 $exchange->durable
 
-This returns the durable flag as passed to the contructor or set by a default.
+This returns the durable flag as passed to the constructor or set by a
+default.
 
 =head2 $exchange->auto_delete
 
-This returns the auto-delete flag as passed to the contructor or set by a
+This returns the auto-delete flag as passed to the constructor or set by a
 default.
 
 =cut

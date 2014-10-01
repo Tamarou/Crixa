@@ -86,7 +86,7 @@ socket one at a time.
 
 =item * prefetch_size => $size
 
-Set the maxmimum number of I<bytes> that will be prefetched. If both this and
+Set the maximum number of I<bytes> that will be prefetched. If both this and
 C<prefetch_count> are set then the smaller of the two wins.
 
 =item * global => $bool

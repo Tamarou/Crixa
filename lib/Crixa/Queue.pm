@@ -276,20 +276,22 @@ Returns the L<Crixa::Channel> that this queue uses.
 
 =head2 $queue->passive
 
-This returns the passive flag as passed to the contructor or set by a default.
+This returns the passive flag as passed to the constructor or set by a
+default.
 
 =head2 $queue->durable
 
-This returns the durable flag as passed to the contructor or set by a default.
+This returns the durable flag as passed to the constructor or set by a
+default.
 
 =head2 $queue->auto_delete
 
-This returns the auto-delete flag as passed to the contructor or set by a
+This returns the auto-delete flag as passed to the constructor or set by a
 default.
 
 =head2 $queue->exclusive
 
-This returns the exclusive flag as passed to the contructor or set by a
+This returns the exclusive flag as passed to the constructor or set by a
 default.
 
 =cut

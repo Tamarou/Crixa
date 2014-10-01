@@ -93,7 +93,7 @@ named parameters.
 
 =item host => $hostname
 
-Ths hostname to connect to. Required.
+The hostname to connect to. Required.
 
 =item port => $post
 
