@@ -29,7 +29,7 @@ sub queue {
     my $args = @_ == 1 ? shift : {@_};
     $args->{engine}  = $self->engine;
     $args->{channel} = $self;
-    Crixa::Queue->new($args);
+    return Crixa::Queue->new($args);
 }
 
 sub ack { $_[0]->_mq->ack( shift->id, @_ ) }
