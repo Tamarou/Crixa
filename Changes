@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+  [ENHANCEMENTS
+
+  * Added a Crixa::Queue->message_count method.
+
 0.06 2014-10-01
 
   [BACKWARDS INCOMPATIBILITIES]

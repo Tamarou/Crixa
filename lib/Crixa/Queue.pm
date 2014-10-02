@@ -10,9 +10,10 @@ use Crixa::Message;
 with qw(Crixa::Engine);
 
 has name => (
-    isa    => 'Str',
-    reader => 'name',
-    writer => '_name'
+    isa       => 'Str',
+    reader    => 'name',
+    writer    => '_name',
+    predicate => '_has_name',
 );
 
 has channel => (
@@ -48,13 +49,31 @@ has auto_delete => (
 sub BUILD {
     my $self = shift;
 
-    my $name = $self->_mq->queue_declare(
+    my $name = $self->_queue_declare;
+    return if $self->_has_name;
+    $self->_name($name);
+}
+
+sub _queue_declare {
+    my $self    = shift;
+    my $passive = shift;
+
+    my $props = $self->_props;
+    $props->{passive} = 1 if $passive;
+
+    return $self->_mq->queue_declare(
         $self->channel->id,
         $self->name // '',
-        $self->_props,
+        $props,
     );
-    return if $self->name;
-    $self->_name($name);
+}
+
+sub message_count {
+    my $self = shift;
+
+    my ( undef, $message_count, undef ) = $self->_queue_declare('passive');
+
+    return $message_count;
 }
 
 sub check_for_message {
