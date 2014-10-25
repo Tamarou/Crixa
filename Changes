@@ -1,6 +1,6 @@
 {{$NEXT}}
 
-  [ENHANCEMENTS
+  [ENHANCEMENTS]
 
   * Added a Crixa::Queue->message_count method.
 
