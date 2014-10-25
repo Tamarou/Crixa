@@ -232,6 +232,10 @@ callback returns.
 This takes the same parameters as the C<check_for_message> method after the
 callback.
 
+=head2 $queue->message_count
+
+Returns the number of messages waiting in the queue.
+
 =head2 $queue->bind(...)
 
 This binds a queue to an exchange. It accepts either a hash or hashref with
