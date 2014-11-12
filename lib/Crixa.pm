@@ -8,12 +8,6 @@ use Crixa::Channel;
 
 with qw(Crixa::Engine);
 
-sub connect {
-    my $o = shift->new(@_);
-    $o->_connect_mq($o);
-    return $o;
-}
-
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
@@ -29,6 +23,12 @@ has _channel_id => (
         reset_channel_id   => 'reset',
     }
 );
+
+sub connect {
+    my $self = shift->new(@_);
+    $self->_connect_mq($self);
+    return $self;
+}
 
 sub new_channel {
     my $self = shift;
