@@ -138,6 +138,8 @@ sub _props {
             qw( passive durable exclusive auto_delete ) };
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

@@ -21,6 +21,8 @@ sub _connect_mq {
 
 with qw(Crixa::Engine::API);    # at the end so we pick up _mq
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

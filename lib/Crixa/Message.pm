@@ -84,6 +84,8 @@ sub ack {
     $self->channel->ack( $self->delivery_tag );
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

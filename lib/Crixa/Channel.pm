@@ -34,6 +34,8 @@ sub queue {
 
 sub ack { $_[0]->_mq->ack( shift->id, @_ ) }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 

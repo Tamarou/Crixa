@@ -99,6 +99,8 @@ sub _props {
             qw( exchange_type passive durable auto_delete ) };
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 __END__
 
