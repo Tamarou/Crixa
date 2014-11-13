@@ -28,8 +28,7 @@ sub live_crixa {
 sub mock_crixa {
     my $mq = Crixa->connect(
         host => '',
-        engine =>
-            Crixa::Engine::RabbitMQ->new( _mq => Test::Net::RabbitMQ->new )
+        mq   => Test::Net::RabbitMQ->new,
     );
 }
 

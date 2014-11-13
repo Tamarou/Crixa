@@ -5,7 +5,7 @@ use 5.10.0;
 use Moose;
 use namespace::autoclean;
 
-with qw(Crixa::HasEngine);
+with qw(Crixa::HasMQ);
 
 has channel => (
     isa      => 'Crixa::Channel',

@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 use Crixa::Channel;
 
-with qw(Crixa::HasEngine);
+with qw(Crixa::HasMQ);
 
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
@@ -34,12 +34,12 @@ sub new_channel {
     my $self = shift;
 
     return Crixa::Channel->new(
-        id     => $self->_next_channel_id,
-        engine => $self->engine,
+        id => $self->_next_channel_id,
+        mq => $self->_mq,
     );
 }
 
-sub disconnect { shift->_mq->disconnect(); }
+sub disconnect { shift->_disconnect_mq; }
 sub DEMOLISH   { shift->disconnect; }
 
 __PACKAGE__->meta->make_immutable;

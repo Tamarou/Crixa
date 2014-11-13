@@ -7,7 +7,7 @@ use namespace::autoclean;
 use Crixa::Queue;
 use Crixa::Exchange;
 
-with qw(Crixa::HasEngine);
+with qw(Crixa::HasMQ);
 
 has id => ( isa => 'Str', is => 'ro', required => 1 );
 
@@ -15,7 +15,11 @@ sub BUILD { $_[0]->_mq->channel_open( $_[0]->id ); }
 
 sub exchange {
     my $self = shift;
-    Crixa::Exchange->new( @_, engine => $self->engine, channel => $self );
+    Crixa::Exchange->new(
+        @_,
+        mq      => $self->_mq,
+        channel => $self,
+    );
 }
 
 sub basic_qos {
@@ -27,7 +31,7 @@ sub basic_qos {
 sub queue {
     my $self = shift;
     my $args = @_ == 1 ? shift : {@_};
-    $args->{engine}  = $self->engine;
+    $args->{mq}      = $self->_mq;
     $args->{channel} = $self;
     return Crixa::Queue->new($args);
 }
