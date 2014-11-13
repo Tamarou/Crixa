@@ -27,4 +27,13 @@ $q->handle_message(
     }
 );
 
+ok( $crixa->connected, 'connected methods returns true' );
+
+$crixa->disconnect;
+
+ok(
+    !$crixa->connected,
+    'connected methods returns false after call to ->disconnect'
+);
+
 done_testing;
