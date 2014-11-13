@@ -7,7 +7,7 @@ use namespace::autoclean;
 use Crixa::Queue;
 use Crixa::Exchange;
 
-with qw(Crixa::Engine);
+with qw(Crixa::HasEngine);
 
 has id => ( isa => 'Str', is => 'ro', required => 1 );
 

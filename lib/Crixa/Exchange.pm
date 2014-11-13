@@ -5,7 +5,7 @@ use 5.10.0;
 use Moose;
 use namespace::autoclean;
 
-with qw(Crixa::Engine);
+with qw(Crixa::HasEngine);
 
 has name => ( isa => 'Str', is => 'ro', required => 1 );
 

@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 use Crixa::Channel;
 
-with qw(Crixa::Engine);
+with qw(Crixa::HasEngine);
 
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 

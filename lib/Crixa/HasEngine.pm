@@ -1,4 +1,4 @@
-package Crixa::Engine;
+package Crixa::HasEngine;
 # ABSTRACT: For internal use only
 
 use Moose::Role;

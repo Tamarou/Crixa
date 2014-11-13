@@ -7,7 +7,7 @@ use namespace::autoclean;
 
 use Crixa::Message;
 
-with qw(Crixa::Engine);
+with qw(Crixa::HasEngine);
 
 has name => (
     isa       => 'Str',
