@@ -1,10 +1,12 @@
 requires "Moose" => "0";
 requires "Moose::Role" => "0";
+requires "Moose::Util::TypeConstraints" => "0";
 requires "Net::AMQP::RabbitMQ" => "0";
 requires "namespace::autoclean" => "0";
 requires "perl" => "v5.10.0";
 
 on 'test' => sub {
+  requires "Crixa::Engine::RabbitMQ" => "0";
   requires "Exporter" => "0";
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
@@ -26,6 +28,7 @@ on 'configure' => sub {
 };
 
 on 'develop' => sub {
+  requires "Pod::Coverage::Moose" => "0";
   requires "Pod::Coverage::TrustPod" => "0";
   requires "Test::CPAN::Changes" => "0.19";
   requires "Test::EOL" => "0";
