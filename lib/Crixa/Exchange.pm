@@ -13,7 +13,6 @@ has channel => (
     isa      => 'Crixa::Channel',
     is       => 'ro',
     required => 1,
-    handles  => { queue => 'queue' },
 );
 
 has exchange_type => (
@@ -49,20 +48,19 @@ sub BUILD {
     );
 }
 
-around queue => sub {
-    my $next     = shift;
-    my $self     = shift;
-    my $args     = @_ == 1 ? $_[0] : {@_};
+sub queue {
+    my $self = shift;
+    my $args = @_ == 1 ? $_[0] : {@_};
 
     my $routing = delete $args->{routing_keys} // [];
-    my $q        = $self->$next($args);
+    my $q = $self->channel->queue($args);
 
     for my $key (@$routing) {
         $q->bind( { exchange => $self->name, routing_key => $key } );
     }
 
     return $q;
-};
+}
 
 sub publish {
     my $self = shift;
