@@ -1,4 +1,5 @@
 package Crixa::Channel;
+
 # ABSTRACT: A Crixa Channel
 
 use Moose;
@@ -17,8 +18,8 @@ sub exchange {
     my $self = shift;
     Crixa::Exchange->new(
         @_,
-        mq      => $self->_mq,
         channel => $self,
+        _mq     => $self->_mq,
     );
 }
 
@@ -31,7 +32,7 @@ sub basic_qos {
 sub queue {
     my $self = shift;
     my $args = @_ == 1 ? shift : {@_};
-    $args->{mq}      = $self->_mq;
+    $args->{_mq}     = $self->_mq;
     $args->{channel} = $self;
     return Crixa::Queue->new($args);
 }
