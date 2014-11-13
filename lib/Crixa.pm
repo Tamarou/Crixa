@@ -35,6 +35,12 @@ has _channel_id => (
 
 sub _build_mq { Net::AMQP::RabbitMQ->new; }
 
+sub connect {
+    my $self = shift->new(@_);
+    $self->_connect_mq($self);
+    return $self;
+}
+
 sub _connect_mq {
     my ( $self, $crixa ) = @_;
 
@@ -43,12 +49,6 @@ sub _connect_mq {
         $args{$_} = $crixa->$_ if defined $crixa->$_;
     }
     $self->_mq->connect( $crixa->host, \%args );
-}
-
-sub connect {
-    my $self = shift->new(@_);
-    $self->_connect_mq($self);
-    return $self;
 }
 
 sub new_channel {
