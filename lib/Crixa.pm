@@ -188,7 +188,7 @@ Crixa->connect >> method:
     );
 
 Note that if you are publishing and consuming messages, this all must happen
-in a single process B<and a single L<Test::Net::RabbitMQ> object in order for
+in a single process B<and a single L<Test::Net::RabbitMQ> object> in order for
 this mocking to work.
 
 If the code that publishes messages makes a separate Crixa object from the one
