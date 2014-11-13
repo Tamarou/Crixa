@@ -60,7 +60,10 @@ sub new_channel {
     );
 }
 
-sub DEMOLISH { shift->disconnect; }
+sub DEMOLISH {
+    my $self = shift;
+    $self->disconnect if $self->_mq && $self->_mq->connected;
+}
 
 __PACKAGE__->meta->make_immutable;
 
