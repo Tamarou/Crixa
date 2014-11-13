@@ -1,5 +1,23 @@
 {{$NEXT}}
 
+  [ENHANCEMENTS]
+
+  * Added a Crixa->connected method.
+
+  * Added an "mq" parameter for the Crixa->connect method that makes it easy
+    to mock the underlying RabbitMQ connection using Test::Net::RabbitMQ. Also
+    added some docs on mocking.
+
+  [BACKWARDS INCOMPATIBILITIES]
+
+  * The entirely undocumented Crixa::Engine::API role and the accompanying
+    Crixa::Engine::RabbitMQ class has been removed. This was a layer between
+    the Crixa object and the underlying RabbitMQ connection object (like
+    Net::AMQP::RabbitMQ) that was intended to support async operations in the
+    future. However, async operations can be done more simply by calling the
+    various non-blocking message receiving methods in an async callback.
+
+
 0.08 2014-11-12
 
   [BUG FIXES]
