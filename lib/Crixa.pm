@@ -167,6 +167,10 @@ Returns the user passed to the constructor, if any.
 
 Returns the password passed to the constructor, if any.
 
+=head2 $crixa->connected
+
+This returns true if the underlying mq object thinks it is connected.
+
 =head1 MOCKING
 
 If you are testing code that uses Crixa, you may want to mock out the use of
@@ -232,13 +236,14 @@ object in the C<test_messages()> sub:
 
         publish($test_mq);
 
-        $test_mq->connect unless $test_mq->is_connected;
+        $test_mq->connect unless $test_mq->connected;
 
         # This will die!
         my @messages = $crixa->channel->queue(...)->check_for_messages;
     }
 
-Of course, this is a very artificial example.
+Of course, this is a very artificial example, but in real code you may come
+across this problem.
 
 =head1 SUPPORT
 
