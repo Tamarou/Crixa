@@ -6,8 +6,8 @@ use lib 't/lib';
 use Test::Crixa;
 use Test::More;
 
-my $mq       = live_crixa();
-my $channel  = $mq->new_channel;
+my $crixa    = live_crixa();
+my $channel  = $crixa->new_channel;
 my $exchange = $channel->exchange( name => prefixed_name('order') );
 my $q        = $exchange->queue(
     name         => prefixed_name('new-orders'),
