@@ -80,47 +80,51 @@
     Queue objects are now available as object attributes. This includes things
     like "durable", "auto_delete", etc.
 
-0.05 2014-04-08T15:47:57Z
- - fix more pod warnings (Chris Prather)
- - Fixed PodWeaver warnings, fixed Dist::Zilla problem with Changes file
-   (Torsten Raudssus)
- - Adding support for port (Torsten Raudssus)
+0.05 2014-04-08
 
-0.04 2012-06-08T01:40:46Z
- - fix a typo that Pod::Coverage caught just before release! (Chris
-   Prather)
- - add docs and an IO-Async example (Chris Prather)
- - remove the channel calls we do not need anymore (Chris Prather)
- - break out fetching the message from the queue (Chris Prather)
- - add exchange() method to Crixa.pm that allows us to hide the channel
-   enitrely if we want (Chris Prather)
- - default queue bindings to an empty arrayref (Chris Prather)
- - move fix a missing reference maker (Chris Prather)
- - add the `$channel->ack()` to the callback. (Chris Prather)
+  * fix more pod warnings (Chris Prather)
+  * Fixed PodWeaver warnings, fixed Dist::Zilla problem with Changes file
+    (Torsten Raudssus)
+  * Adding support for port (Torsten Raudssus)
 
-0.03 2012-04-10T22:07:53Z
- - we just need to exclude ^perl5 (Chris Prather)
- - Refactor the RabbitMQ Role into a Class (Chris Prather)
- - update dist.ini to generate Changes (Chris Prather)
+0.04 2012-06-08
 
-0.02 2012-04-03T08:25:50Z
- - exclude stuff that we accidentally released in 0.01 (Chris Prather)
- - move to the Git NextVersion plugin (Chris Prather)
+  * fix a typo that Pod::Coverage caught just before release! (Chris Prather)
+  * add docs and an IO-Async example (Chris Prather)
+  * remove the channel calls we do not need anymore (Chris Prather)
+  * break out fetching the message from the queue (Chris Prather)
+  * add exchange() method to Crixa.pm that allows us to hide the channel
+    entirely if we want (Chris Prather)
+  * default queue bindings to an empty arrayref (Chris Prather)
+  * move fix a missing reference maker (Chris Prather)
+  * add the `$channel->ack()` to the callback. (Chris Prather)
 
-0.01 2012-04-03T08:01:01Z
- - add Crixa-* to gitignore (Chris Prather)
- - add gitignore (Chris Prather)
- - rename CRIXA_HOST to RABBITMQ_HOST in live tests (Chris Prather)
- - clean up a little cruft (Chris Prather)
- - make live tests *more* optional (Chris Prather)
- - add some simple tests (Chris Prather)
- - add some more pod stubs and some test stubs (Chris Prather)
- - add inital pod (Chris Prather)
- - kill podweaver (Chris Prather)
- - fix a small potential bug (Chris Prather)
- - finish adding the examples from RabbitMQ (Chris Prather)
- - sweeping updates as we port the RabbitMQ examples over (Chris Prather)
- - add README.md (Chris Prather)
- - initial draft (Chris Prather)
- - initial commit (Chris Prather)
+0.03 2012-04-10
+
+  * we just need to exclude ^perl5 (Chris Prather)
+  * Refactor the RabbitMQ Role into a Class (Chris Prather)
+  * update dist.ini to generate Changes (Chris Prather)
+
+0.02 2012-04-03
+
+  * exclude stuff that we accidentally released in 0.01 (Chris Prather)
+  * move to the Git NextVersion plugin (Chris Prather)
+
+0.01 2012-04-03
+
+  * add Crixa-* to gitignore (Chris Prather)
+  * add gitignore (Chris Prather)
+  * rename CRIXA_HOST to RABBITMQ_HOST in live tests (Chris Prather)
+  * clean up a little cruft (Chris Prather)
+  * make live tests *more* optional (Chris Prather)
+  * add some simple tests (Chris Prather)
+  * add some more pod stubs and some test stubs (Chris Prather)
+  * add inital pod (Chris Prather)
+  * kill podweaver (Chris Prather)
+  * fix a small potential bug (Chris Prather)
+  * finish adding the examples from RabbitMQ (Chris Prather)
+  * sweeping updates as we port the RabbitMQ examples over (Chris Prather)
+  * add README.md (Chris Prather)
+  * initial draft (Chris Prather)
+  * initial commit (Chris Prather)
 
