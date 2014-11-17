@@ -19,7 +19,6 @@
     future. However, async operations can be done more simply by calling the
     various non-blocking message receiving methods in an async callback.
 
-
 0.08 2014-11-12
 
   [BUG FIXES]
