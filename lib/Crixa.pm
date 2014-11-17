@@ -14,7 +14,7 @@ has '+_mq' => (
     required => 0,
     lazy     => 1,
     builder  => '_build_mq',
-    handles  => [qw( connected disconnect )],
+    handles  => [qw( disconnect )],
 );
 
 has host => ( isa => 'Str', is => 'ro', required => 1, );
@@ -60,9 +60,19 @@ sub new_channel {
     );
 }
 
+sub is_connected {
+    my $self = shift;
+
+    return
+          $self->_mq->can('is_connected') ? $self->_mq->is_connected
+        : $self->_mq->can('connected')    ? $self->_mq->connected
+        : die
+        'The underlying mq object does not have an is_connected or connected method!';
+}
+
 sub DEMOLISH {
     my $self = shift;
-    $self->disconnect if $self->_mq && $self->_mq->connected;
+    $self->disconnect if $self->_mq && $self->is_connected;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -170,7 +180,7 @@ Returns the user passed to the constructor, if any.
 
 Returns the password passed to the constructor, if any.
 
-=head2 $crixa->connected
+=head2 $crixa->is_connected
 
 This returns true if the underlying mq object thinks it is connected.
 

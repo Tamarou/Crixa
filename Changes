@@ -1,5 +1,12 @@
 {{$NEXT}}
 
+  [BACKWARDS INCOMPATIBILITIES]
+
+  * Renamed the Crixa->connected method to Criax->is_connected. This matches
+    what Net::AMQP::RabbitMQ calls the method. For Test::RabbitMQ we call its
+    connected method internally.
+
+
 0.09 2014-11-13
 
   [ENHANCEMENTS]

@@ -4,7 +4,18 @@ use warnings;
 use lib 't/lib';
 
 use Test::Crixa;
+use Test::Warnings qw( warnings );
 use Test::More;
+
+{
+    my $crixa = live_crixa();
+    ok( $crixa->is_connected, 'is_connected returns true' );
+    is_deeply(
+        [ warnings { undef $crixa } ],
+        [],
+        'no warning when Crixa object is destroyed'
+    );
+}
 
 my $crixa    = live_crixa();
 my $channel  = $crixa->new_channel;
@@ -42,6 +53,12 @@ $q->handle_message(
 
 $q->delete;
 $exchange->delete;
+
+$crixa->disconnect;
+ok(
+    !$crixa->is_connected,
+    'is_connected returns false after call to ->disconnect'
+);
 
 done_testing;
 
