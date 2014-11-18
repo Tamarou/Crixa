@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.10 2014-11-17
+
   [BACKWARDS INCOMPATIBILITIES]
 
   * Renamed the Crixa->connected method to Criax->is_connected. This matches
