@@ -24,32 +24,44 @@ my $q        = $exchange->queue(
     name         => prefixed_name('new-orders'),
     routing_keys => ['order.new']
 );
-$exchange->publish( { routing_key => 'order.new', body => 'hello there!' } );
 
-_wait_for_min_messages( $q, 1 );
+{
+    $exchange->publish(
+        { routing_key => 'order.new', body => 'hello there!' } );
 
-is( $q->message_count, 1, 'queue has one message waiting' );
-$q->handle_message(
-    sub {
-        cmp_ok( $_->body, 'eq', 'hello there!', 'got the first message' );
-    }
-);
+    _wait_for_min_messages( $q, 1 );
 
-_wait_for_no_messages($q);
+    is( $q->message_count, 1, 'queue has one message waiting' );
+    $q->handle_message(
+        sub {
+            cmp_ok( $_->body, 'eq', 'hello there!', 'got the first message' );
+        }
+    );
+}
 
-$exchange->publish( { routing_key => 'order.new', body => 'hello again!' } );
+{
+    _wait_for_no_messages($q);
 
-_wait_for_min_messages( $q, 1 );
-cmp_ok(
-    $q->message_count, '>=', 1,
-    'queue has at least one message waiting'
-);
+    $exchange->publish(
+        { routing_key => 'order.new', body => 'hello again!' } );
+}
 
-$q->handle_message(
-    sub {
-        cmp_ok( $_->body, 'eq', 'hello again!', 'got the second message' );
-    }
-);
+{
+    _wait_for_min_messages( $q, 1 );
+    cmp_ok(
+        $q->message_count, '>=', 1,
+        'queue has at least one message waiting'
+    );
+
+    $q->handle_message(
+        sub {
+            cmp_ok(
+                $_->body, 'eq', 'hello again!',
+                'got the second message'
+            );
+        }
+    );
+}
 
 $q->delete;
 $exchange->delete;
