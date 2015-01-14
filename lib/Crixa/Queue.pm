@@ -89,7 +89,7 @@ sub check_for_message {
 
 sub _inflate_message {
     my $self = shift;
-    my $msg = shift;
+    my $msg  = shift;
 
     return unless defined $msg;
 
@@ -131,7 +131,7 @@ sub delete {
     my $self = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
 
-    $self->_mq->queue_delete( $self->channel->id, $self->name, $args )
+    $self->_mq->queue_delete( $self->channel->id, $self->name, $args );
 }
 
 sub consume {

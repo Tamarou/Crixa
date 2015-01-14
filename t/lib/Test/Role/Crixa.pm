@@ -292,18 +292,19 @@ sub _with_alarm {
     my $wait = shift || 10;
 
     try {
-        local $SIG{ALRM} = sub { die "waited $wait seconds and did not finish\n" };
+        local $SIG{ALRM}
+            = sub { die "waited $wait seconds and did not finish\n" };
         alarm $wait;
         $cb->();
         alarm 0;
         pass('executed callback without alarm firing');
-     }
-     catch {
-         alarm 0;
-         warn $_;
-         die $_ unless $_ =~ /waited \d+ seconds and did not finish/;
-         fail('executed callback without alarm firing');
-     };
+    }
+    catch {
+        alarm 0;
+        warn $_;
+        die $_ unless $_ =~ /waited \d+ seconds and did not finish/;
+        fail('executed callback without alarm firing');
+    };
 }
 
 sub _channel {

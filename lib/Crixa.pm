@@ -26,7 +26,7 @@ has '+_mq' => (
 has host => ( isa => 'Str', is => 'ro', required => 1, );
 
 has [qw(user password)] => ( isa => 'Str', is => 'ro' );
-has [qw(port)] => ( isa => 'Int', is => 'ro' );
+has [qw(port)]          => ( isa => 'Int', is => 'ro' );
 
 has _channel_id => (
     isa     => 'Int',

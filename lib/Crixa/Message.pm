@@ -81,8 +81,8 @@ has message_count => (
 );
 
 has consumer_tag => (
-    is  => 'ro',
-    isa => 'Str',
+    is        => 'ro',
+    isa       => 'Str',
     predicate => '_has_consumer_tag',
 );
 
