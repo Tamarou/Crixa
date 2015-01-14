@@ -5,7 +5,7 @@ use Moose;
 use namespace::autoclean;
 
 use Crixa::Channel;
-use Net::AMQP::RabbitMQ;
+use Net::AMQP::RabbitMQ 0.008000;
 
 with qw(Crixa::HasMQ);
 

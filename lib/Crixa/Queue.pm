@@ -43,7 +43,7 @@ has exclusive => (
 has auto_delete => (
     is      => 'ro',
     isa     => 'Bool',
-    default => 1,
+    default => 0,
 );
 
 sub BUILD {
@@ -131,6 +131,18 @@ sub delete {
     $self->_mq->queue_delete( $self->channel->id, $self->name, $args )
 }
 
+sub consume {
+    my $self = shift;
+    my $cb   = shift;
+    my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
+
+    my $tag = $self->_mq->consume( $self->channel->id, $self->name, $args );
+    while ( my $raw = $self->_mq->recv ) {
+        last unless $cb->( $self->_inflate_message($raw) );
+    }
+    $self->_mq->cancel( $self->channel->id, $tag );
+}
+
 sub _props {
     my $self = shift;
 
@@ -216,6 +228,63 @@ If this is false, then the message is acknowledged immediately. Calling the
 C<ack> method later with this message's delivery tag will be an error.
 
 This defaults to true.
+
+=back
+
+=head2 $queue->consume($callback, ...)
+
+This method start consuming message via the AMQP consume API using the given
+callback. Internally, this uses the C<poll()> system call to efficiently wait
+for messages to come in. You are strongly encouraged to use this over the
+C<wait_for_message()> methods and instead of calling C<check_for_message()> in
+a loop.
+
+The callback you provide will be passed a single argument with a single
+C<Crixa::Message> as its argument. The callback is expected to return true or
+false. If it returns true, Crixa will continue waiting for new messages. If it
+returns false, it will cancel the consumer and the C<consume()> method will
+return.
+
+Note that if you create an "auto-delete" queue, then it will be deleted after
+the last consumer it cancelled.
+
+This method also accepts either a hash or hashref with the following keys
+after the callback:
+
+=over 4
+
+=item * consumer_tag => $string
+
+A string identifying the consumer. If you don't provide one it will be
+generated automatically. This will be available from the L<Crixa::Message>
+object passed to your callback, regardless of whether it is auto-generated or
+not.
+
+=item * no_local => $bool
+
+If this is true, then the server will not send messages to the same connection
+as the one from which they were published.
+
+This defaults to false.
+
+=item * no_ack => $bool
+
+If this is true, then the message is not acknowledged as it is taken from the
+queue. You will need to explicitly acknowledge it using the C<ack> method on
+the L<Crixa::Channel> object from which the message came.
+
+If this is false, then the message is acknowledged immediately. Calling the
+C<ack> method later with this message's delivery tag will be an error.
+
+This defaults to true.
+
+=item * exclusive => $bool
+
+If this is true, then only this consumer may access the queue. If another
+consumer attempts to access the queue at the same time it will received an
+error.
+
+This defaults to false.
 
 =back
 

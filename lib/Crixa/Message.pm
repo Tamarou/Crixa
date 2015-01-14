@@ -72,10 +72,25 @@ has delivery_tag => (
 );
 
 has message_count => (
-    is       => 'ro',
-    isa      => 'Int',
-    required => 1,
+    is        => 'ro',
+    isa       => 'Int',
+    predicate => '_has_message_count',
 );
+
+has consumer_tag => (
+    is  => 'ro',
+    isa => 'Str',
+    predicate => '_has_consumer_tag',
+);
+
+sub BUILD {
+    my $self = shift;
+
+    die 'A Crixa::Message must have a message_count or consumer_tag'
+        unless $self->_has_message_count() || $self->_has_consumer_tag();
+
+    return;
+}
 
 sub ack {
     my $self = shift;
@@ -162,6 +177,9 @@ consumer to receive it has had a chance to acknowledge it.
 The number of messages left in the queue at the time this message was
 delivered.
 
+Note that this is only set for messages which are not received via the C<<
+Crixa::Queue->consume() >> method.
+
 =head2 $message->routing_key
 
 The routing path on which the message was received.
@@ -170,9 +188,17 @@ The routing path on which the message was received.
 
 The exchange to which this message was published
 
+=head2 $message->delivery_tag
+
+The delivery tag for a given message. This is used when the C<<
+$message->ack() >> method is called.
+
 =head2 $message->consumer_tag
 
-The tag for the message's consumer.
+The tag for the consumer associated with the message, if one exists.
+
+Note that this is only set for messages which are received via the C<<
+Crixa::Queue->consume() >> method.
 
 =head2 Crixa::Message->new(...)
 

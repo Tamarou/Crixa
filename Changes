@@ -1,5 +1,29 @@
 {{$NEXT}}
 
+  [ENHANCEMENTS]
+
+  * Implemented Crixa::Queue->consume(), a blocking API for waiting until
+    messages are received. Unlike the wait_for_message() method, this method
+    does not use a busy loop. Internally, it uses the poll() system call, so
+    it should be much kinder on your CPU.
+
+  * Added a Crixa::Message->consumer_tag() attribute. This will be set for
+    messages received via the new Crixa::Queue->consume() API.
+
+  [CHANGES]
+
+  * Crixa::Message->message_count() is no longer set for all messages, since
+    messages received via consume() have no message count.
+
+  [BUG FIXES]
+
+  * The docs said that the queue "auto_delete" parameter defaulted to false,
+    but it was actually defaulting to true. This was largely irrelevant given
+    that there past releases had no support for the consume()/recv() interface
+    in Crixa::Queue, but if you made a queue with Crixa and then used the
+    underlying mq object to call consume(), this would've been a problem.
+
+
 0.10 2014-11-17
 
   [BACKWARDS INCOMPATIBILITIES]
