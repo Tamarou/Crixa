@@ -5,6 +5,7 @@ use warnings;
 use namespace::autoclean;
 
 use Crixa;
+use Test::Net::RabbitMQ 0.11;
 use Test::More;
 use Try::Tiny;
 
