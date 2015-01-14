@@ -139,8 +139,10 @@ sub consume {
     my $cb   = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
 
+    my $timeout = delete $args->{timeout};
+
     my $tag = $self->_mq->consume( $self->channel->id, $self->name, $args );
-    while ( my $raw = $self->_mq->recv ) {
+    while ( my $raw = $self->_mq->recv( $timeout ? $timeout : () ) ) {
         last unless $cb->( $self->_inflate_message($raw) );
     }
     $self->_mq->cancel( $self->channel->id, $tag );
@@ -249,11 +251,14 @@ for messages to come in. You are strongly encouraged to use this over the
 C<wait_for_message()> methods and instead of calling C<check_for_message()> in
 a loop.
 
-The callback you provide will be passed a single argument with a single
-C<Crixa::Message> as its argument. The callback is expected to return true or
-false. If it returns true, Crixa will continue waiting for new messages. If it
-returns false, it will cancel the consumer and the C<consume()> method will
-return.
+The callback you provide will be passed a single optional argument. This
+argument is always a C<Crixa::Message> object. However, if you specified a
+timeout (see below), then your callback may be called without any arguments at
+all.
+
+The callback is expected to return true or false. If it returns true, Crixa
+will continue waiting for new messages. If it returns false, it will cancel
+the consumer and the C<consume()> method will return.
 
 Note that if you create an "auto-delete" queue, then it will be deleted after
 the last consumer it cancelled.
@@ -262,6 +267,12 @@ This method also accepts either a hash or hashref with the following keys
 after the callback:
 
 =over 4
+
+=item * timeout => $integer
+
+This is an optional timeout for each internal call to the C<<
+Net::AMQP::RabbitMQ->recv() >> method. If you specify this, then your callback
+will be called without any arguments.
 
 =item * consumer_tag => $string
 
