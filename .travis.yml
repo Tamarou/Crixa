@@ -17,6 +17,11 @@ env:
     - AUTHOR_TESTING=1
     - RABBITMQ_HOST=localhost
 
+matrix:
+  include:
+    - perl: "5.20"
+      env: COVERAGE=1
+
 services:
   - rabbitmq
 
@@ -31,10 +36,16 @@ before_install:
 install:
   - cpan-install ExtUtils::MakeMaker~6.68 --deps
 
+before_script:
+  - coverage-setup
+
 script:
   - perl Makefile.PL
   - make
   - prove -br -j$(test-jobs) $(test-files)
+
+after_success:
+  - coverage-report
 
 notifications:
   email:
