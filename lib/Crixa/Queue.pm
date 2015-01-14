@@ -66,7 +66,7 @@ sub _queue_declare {
 
     return $self->_mq->queue_declare(
         $self->channel->id,
-        $self->name // '',
+        $self->name // q{},
         $props,
     );
 }
@@ -114,6 +114,7 @@ sub handle_message {
     confess 'Something unusual happened.';
 }
 
+## no critic (Subroutines::ProhibitBuiltinHomonyms)
 sub bind {
     my $self = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
@@ -133,6 +134,7 @@ sub delete {
 
     $self->_mq->queue_delete( $self->channel->id, $self->name, $args );
 }
+## use critic
 
 sub consume {
     my $self = shift;

@@ -1,9 +1,12 @@
+## no critic (Modules::RequireExplicitInclusion:, Modules::ProhibitMultiplePackages)
 use strict;
 use warnings;
 
 package _CLI;
 
 use lib 't/lib';
+
+use namespace::autoclean;
 
 use Module::Runtime qw( require_module );
 use Test::Class::Moose::Runner;
@@ -74,17 +77,7 @@ sub _tcm_config_class_constructor_args {
     );
 }
 
-# This is broken out into its own method for the benefit of classes that might
-# want to add hooks on running (but only after the TCM::Runner object has been
-# created).
-sub _runtests {
-    my $self   = shift;
-    my $runner = shift;
-
-    $runner->runtests;
-
-    return;
-}
+__PACKAGE__->meta()->make_immutable();
 
 package main;
 

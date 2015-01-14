@@ -23,10 +23,21 @@ has '+_mq' => (
     handles  => [qw( disconnect )],
 );
 
-has host => ( isa => 'Str', is => 'ro', required => 1, );
+has host => (
+    isa      => 'Str',
+    is       => 'ro',
+    required => 1,
+);
 
-has [qw(user password)] => ( isa => 'Str', is => 'ro' );
-has [qw(port)]          => ( isa => 'Int', is => 'ro' );
+has [qw(user password)] => (
+    isa => 'Str',
+    is  => 'ro',
+);
+
+has port => (
+    isa => 'Int',
+    is  => 'ro',
+);
 
 has _channel_id => (
     isa     => 'Int',
@@ -36,16 +47,18 @@ has _channel_id => (
         _next_channel_id   => 'inc',
         release_channel_id => 'dec',
         reset_channel_id   => 'reset',
-    }
+    },
 );
 
 sub _build_mq { Net::AMQP::RabbitMQ->new; }
 
+## no critic (Subroutines::ProhibitBuiltinHomonyms)
 sub connect {
     my $self = shift->new(@_);
     $self->_connect_mq($self);
     return $self;
 }
+## use critic
 
 sub _connect_mq {
     my ( $self, $crixa ) = @_;

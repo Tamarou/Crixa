@@ -10,7 +10,11 @@ use Moose;
 
 with qw(Crixa::HasMQ);
 
-has name => ( isa => 'Str', is => 'ro', required => 1 );
+has name => (
+    isa      => 'Str',
+    is       => 'ro',
+    required => 1,
+);
 
 has channel => (
     isa      => 'Crixa::Channel',
@@ -69,7 +73,7 @@ sub publish {
     my $self = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
 
-    my $routing_key = delete $args->{routing_key} // '';
+    my $routing_key = delete $args->{routing_key} // q{};
     my $body = delete $args->{body}
         || confess(
         'You must supply a body when calling the publish() method');
@@ -86,12 +90,14 @@ sub publish {
     );
 }
 
+## no critic (Subroutines::ProhibitBuiltinHomonyms)
 sub delete {
     my $self = shift;
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : {};
 
     $self->_mq->exchange_delete( $self->channel->id, $self->name, $args );
 }
+## use critic
 
 sub _props {
     my $self = shift;

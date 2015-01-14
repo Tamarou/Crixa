@@ -269,12 +269,11 @@ sub _wait_for_min_messages {
         : 's'
         );
 
-    local $@;
     try {
         local $SIG{ALRM}
             = sub { die "waited 5 seconds and did not finish\n" };
         alarm 5;
-        sleep 1 until $queue->message_count() >= $min_count;
+        sleep 1 while $queue->message_count() < $min_count;
         alarm 0;
         pass($desc);
     }
