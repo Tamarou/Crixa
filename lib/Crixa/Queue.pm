@@ -1,9 +1,12 @@
 package Crixa::Queue;
-# ABSTRACT: A Crixa Queue
 
-use 5.10.0;
-use Moose;
+use strict;
+use warnings;
 use namespace::autoclean;
+
+our $VERSION = '0.11';
+
+use Moose;
 
 use Crixa::Message;
 
@@ -153,7 +156,14 @@ sub _props {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+# ABSTRACT: A Crixa Queue
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 DESCRIPTION
 

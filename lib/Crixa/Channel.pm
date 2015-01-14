@@ -1,9 +1,12 @@
 package Crixa::Channel;
 
-# ABSTRACT: A Crixa Channel
+use strict;
+use warnings;
+use namespace::autoclean;
+
+our $VERSION = '0.11';
 
 use Moose;
-use namespace::autoclean;
 
 use Crixa::Queue;
 use Crixa::Exchange;
@@ -42,7 +45,14 @@ sub ack { $_[0]->_mq->ack( shift->id, @_ ) }
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+# ABSTRACT: A Crixa Channel
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 DESCRIPTION
 

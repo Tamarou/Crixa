@@ -1,8 +1,14 @@
 package Crixa;
-# ABSTRACT: A Cleaner API for Net::AMQP::RabbitMQ
+
+use v5.10;
+
+use strict;
+use warnings;
+use namespace::autoclean;
+
+our $VERSION = '0.11';
 
 use Moose;
-use namespace::autoclean;
 
 use Crixa::Channel;
 use Net::AMQP::RabbitMQ 0.008000;
@@ -79,7 +85,13 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+# ABSTRACT: A Cleaner API for Net::AMQP::RabbitMQ
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 SYNOPSIS
 

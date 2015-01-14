@@ -1,9 +1,12 @@
 package Crixa::Exchange;
-# ABSTRACT: A Crixa Exchange
 
-use 5.10.0;
-use Moose;
+use strict;
+use warnings;
 use namespace::autoclean;
+
+our $VERSION = '0.11';
+
+use Moose;
 
 with qw(Crixa::HasMQ);
 
@@ -100,7 +103,14 @@ sub _props {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+# ABSTRACT: A Crixa Exchange
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 DESCRIPTION
 

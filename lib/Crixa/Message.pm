@@ -1,9 +1,12 @@
 package Crixa::Message;
-# ABSTRACT: A Crixa Message
 
-use 5.10.0;
-use Moose;
+use strict;
+use warnings;
 use namespace::autoclean;
+
+our $VERSION = '0.11';
+
+use Moose;
 
 has channel => (
     isa      => 'Crixa::Channel',
@@ -100,7 +103,14 @@ sub ack {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+# ABSTRACT: A Crixa Message
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 DESCRIPTION
 

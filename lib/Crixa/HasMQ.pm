@@ -1,12 +1,16 @@
 package Crixa::HasMQ;
-# ABSTRACT: For internal use only
+
+use strict;
+use warnings;
+use namespace::autoclean;
+
+our $VERSION = '0.11';
 
 use Moose::Role;
-use namespace::autoclean;
 
 use Moose::Util::TypeConstraints qw( duck_type );
 
-# XXX - Test::Net::RabbitMQ doesn't support some of the method we call
+# XXX - Test::Net::RabbitMQ doesn't support some of the methods we call
 # internally so we won't require them but it sure would be nice to patch
 # Test::Net::RabbitMQ to include these:
 #
@@ -34,7 +38,14 @@ has _mq => (
 );
 
 1;
+
+# ABSTRACT: For internal use only
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 DESCRIPTION
 
