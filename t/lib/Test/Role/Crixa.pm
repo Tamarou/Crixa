@@ -5,7 +5,6 @@ use warnings;
 use namespace::autoclean;
 
 use Crixa;
-use Test::Net::RabbitMQ 0.11;
 use Test::More;
 use Try::Tiny;
 
@@ -38,6 +37,7 @@ my @test_methods = qw(
     test_wait_for_message
     test_message_count
     test_consume
+    test_consume_with_timeout
     test_partial_consume
 );
 around \@test_methods => sub {
@@ -157,6 +157,52 @@ sub test_consume {
                 }
             );
         }
+    );
+
+    is_deeply(
+        [ sort @bodies ],
+        [qw( body-1 body-2 body-3 body-4 )],
+        'got all expected bodies via consume interface'
+    );
+}
+
+# We are testing that the ->consume loop will continue when
+# Net::AMQP::RabbitMQ->recv returns undef because of a timeout.
+sub test_consume_with_timeout {
+    my $self     = shift;
+    my $exchange = shift;
+    my $queue    = shift;
+
+    my $published = 0;
+
+    my @bodies;
+    $self->_with_alarm(
+        sub {
+            $queue->consume(
+                sub {
+                    my $msg = shift;
+
+                    # This ensures that we'll get called at least once with
+                    # undef.
+                    unless ( $published++ ) {
+                        for my $i ( 1 .. 4 ) {
+                            $exchange->publish(
+                                {
+                                    routing_key => 'order.new',
+                                    body        => 'body-' . $i
+                                }
+                            );
+                        }
+                    }
+
+                    return 1 unless $msg;
+
+                    push @bodies, $msg->body();
+                    return @bodies != 4;
+                },
+                timeout => 1,
+            );
+        },
     );
 
     is_deeply(

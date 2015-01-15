@@ -144,7 +144,8 @@ sub consume {
     my $timeout = delete $args->{timeout};
 
     my $tag = $self->_mq->consume( $self->channel->id, $self->name, $args );
-    while ( my $raw = $self->_mq->recv( $timeout ? $timeout : () ) ) {
+    while (1) {
+        my $raw = $self->_mq->recv( $timeout ? $timeout : () );
         last unless $cb->( $self->_inflate_message($raw) );
     }
     $self->_mq->cancel( $self->channel->id, $tag );
