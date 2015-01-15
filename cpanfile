@@ -1,7 +1,7 @@
 requires "Moose" => "0";
 requires "Moose::Role" => "0";
 requires "Moose::Util::TypeConstraints" => "0";
-requires "Net::AMQP::RabbitMQ" => "0.008000";
+requires "Net::AMQP::RabbitMQ" => "0.009000";
 requires "namespace::autoclean" => "0";
 requires "perl" => "v5.10.0";
 requires "strict" => "0";
@@ -33,6 +33,8 @@ on 'configure' => sub {
 
 on 'develop' => sub {
   requires "Code::TidyAll" => "0.24";
+  requires "Perl::Critic" => "1.123";
+  requires "Perl::Tidy" => "20140711";
   requires "Pod::Coverage::Moose" => "0";
   requires "Pod::Coverage::TrustPod" => "0";
   requires "Test::CPAN::Changes" => "0.19";
