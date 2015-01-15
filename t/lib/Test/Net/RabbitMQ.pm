@@ -27,9 +27,9 @@ our $VERSION = '0.12';
     $mq->consume(1, 'new-orders');
 
     my $msg = $mq->recv;
-    
+
     # Or
-    
+
     my $msg = $mq->get(1, 'order.new', {});
 
 =head1 DESCRIPTION
@@ -46,7 +46,7 @@ pop them.
 
 =head1 CAVEATS
 
-This module has all the features I've needed to successfully test our 
+This module has all the features I've needed to successfully test our
 RabbitMQ-using application. Patches are welcome if I'm missing something you
 need! At the moment there are a number of shortcomings:
 
@@ -72,9 +72,9 @@ need! At the moment there are a number of shortcomings:
 #   ...
 # }
 has bindings => (
-    traits => [ qw(Hash) ],
-    is => 'rw',
-    isa => 'HashRef',
+    traits  => [qw(Hash)],
+    is      => 'rw',
+    isa     => 'HashRef',
     default => sub { {} },
 );
 
@@ -85,21 +85,21 @@ If false then any calls to connect will die to emulate a failed connection.
 =cut
 
 has connectable => (
-    is => 'rw',
-    isa => 'Bool',
+    is      => 'rw',
+    isa     => 'Bool',
     default => 1
 );
 
 has connected => (
-    is => 'rw',
-    isa => 'Bool',
+    is      => 'rw',
+    isa     => 'Bool',
     default => 0
 );
 
 has channels => (
-    traits => [ qw(Hash) ],
-    is => 'rw',
-    isa => 'HashRef',
+    traits  => [qw(Hash)],
+    is      => 'rw',
+    isa     => 'HashRef',
     default => sub { {} },
     handles => {
         _channel_exists => 'exists',
@@ -117,15 +117,15 @@ to STDERR any time a message is added to a queue.
 =cut
 
 has debug => (
-    is => 'rw',
-    isa => 'Bool',
+    is      => 'rw',
+    isa     => 'Bool',
     default => 0
 );
 
 has exchanges => (
-    traits => [ qw(Hash) ],
-    is => 'rw',
-    isa => 'HashRef',
+    traits  => [qw(Hash)],
+    is      => 'rw',
+    isa     => 'HashRef',
     default => sub { {} },
     handles => {
         _exchange_exists => 'exists',
@@ -136,16 +136,16 @@ has exchanges => (
 );
 
 has queue => (
-    is => 'rw',
-    isa => 'Str',
+    is        => 'rw',
+    isa       => 'Str',
     predicate => '_has_queue',
-    clearer => '_clear_queue',
+    clearer   => '_clear_queue',
 );
 
 has queues => (
-    traits => [ qw(Hash) ],
-    is => 'rw',
-    isa => 'HashRef',
+    traits  => [qw(Hash)],
+    is      => 'rw',
+    isa     => 'HashRef',
     default => sub { {} },
     handles => {
         _queue_exists => 'exists',
@@ -156,7 +156,7 @@ has queues => (
 );
 
 has delivery_tag => (
-    traits  => [ qw(Counter) ],
+    traits  => [qw(Counter)],
     is      => 'ro',
     isa     => 'Num',
     default => 0,
@@ -170,7 +170,7 @@ has delivery_tag => (
 has _tx_messages => (
     is      => 'ro',
     isa     => 'HashRef',
-    default => sub{ {} },
+    default => sub { {} },
 );
 
 =method channel_close($number)
@@ -180,7 +180,7 @@ Closes the specific channel.
 =cut
 
 sub channel_close {
-    my ($self, $channel) = @_;
+    my ( $self, $channel ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -196,11 +196,11 @@ Opens a channel with the specific number.
 =cut
 
 sub channel_open {
-    my ($self, $channel) = @_;
+    my ( $self, $channel ) = @_;
 
     die "Not connected" unless $self->connected;
 
-    $self->_set_channel($channel, 1);
+    $self->_set_channel( $channel, 1 );
 }
 
 =method connect
@@ -225,8 +225,9 @@ Sets the queue that will be popped when C<recv> is called.
 =cut
 
 my $ctag = 0;
+
 sub consume {
-    my ($self, $channel, $queue, $options) = @_;
+    my ( $self, $channel, $queue, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -234,11 +235,13 @@ sub consume {
 
     die "Unknown queue" unless $self->_queue_exists($queue);
 
-    $options = $self->_apply_defaults( $options, {
-        no_local  => 0,
-        no_ack    => 1,
-        exclusive => 0,
-    });
+    $options = $self->_apply_defaults(
+        $options, {
+            no_local  => 0,
+            no_ack    => 1,
+            exclusive => 0,
+        }
+    );
 
     die "no_ack=>0 is not supported at this time" if !$options->{no_ack};
 
@@ -258,7 +261,7 @@ returns true if there is a subscription to cancel, false otherwise.
 =cut
 
 sub cancel {
-    my ($self, $channel, $consumer_tag) = @_;
+    my ( $self, $channel, $consumer_tag ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -293,13 +296,13 @@ Creates an exchange of the specified name.
 =cut
 
 sub exchange_declare {
-    my ($self, $channel, $exchange, $options) = @_;
+    my ( $self, $channel, $exchange, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel" unless $self->_channel_exists($channel);
 
-    $self->_set_exchange($exchange, 1);
+    $self->_set_exchange( $exchange, 1 );
 }
 
 =method exchange_delete($channel, $exchange, $options)
@@ -309,7 +312,7 @@ Deletes an exchange of the specified name.
 =cut
 
 sub exchange_delete {
-    my ($self, $channel, $exchange, $options) = @_;
+    my ( $self, $channel, $exchange, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -327,16 +330,16 @@ or L</tx_rollback> is made.
 =cut
 
 sub tx_select {
-    my ($self, $channel) = @_;
+    my ( $self, $channel ) = @_;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel: $channel" unless $self->_channel_exists($channel);
 
-    my $messages = $self->_tx_messages->{ $channel };
+    my $messages = $self->_tx_messages->{$channel};
     die "Transaction already started" if $messages;
 
-    $self->_tx_messages->{ $channel } = [];
+    $self->_tx_messages->{$channel} = [];
 }
 
 =method tx_commit($channel)
@@ -347,20 +350,20 @@ calls to this point to be published.
 =cut
 
 sub tx_commit {
-    my ($self, $channel) = @_;
+    my ( $self, $channel ) = @_;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel: $channel" unless $self->_channel_exists($channel);
 
-    my $messages = $self->_tx_messages->{ $channel };
+    my $messages = $self->_tx_messages->{$channel};
     die "Transaction not yet started" unless $messages;
 
     foreach my $message (@$messages) {
         $self->_publish( $channel, @$message );
     }
 
-    delete $self->_tx_messages->{ $channel };
+    delete $self->_tx_messages->{$channel};
 }
 
 =method tx_rollback($channel)
@@ -370,16 +373,16 @@ Rolls the transaction back, causing all buffered publish() calls to be wiped.
 =cut
 
 sub tx_rollback {
-    my ($self, $channel) = @_;
+    my ( $self, $channel ) = @_;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel: $channel" unless $self->_channel_exists($channel);
 
-    my $messages = $self->_tx_messages->{ $channel };
+    my $messages = $self->_tx_messages->{$channel};
     die "Transaction not yet started" unless $messages;
 
-    delete $self->_tx_messages->{ $channel };
+    delete $self->_tx_messages->{$channel};
 }
 
 =method get ($channel, $queue, $options)
@@ -401,7 +404,7 @@ information:
 =cut
 
 sub get {
-    my ($self, $channel, $queue, $options) = @_;
+    my ( $self, $channel, $queue, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -409,7 +412,7 @@ sub get {
 
     die "Unknown queue: $queue" unless $self->_queue_exists($queue);
 
-    my $message = shift(@{ $self->_get_queue($queue) });
+    my $message = shift( @{ $self->_get_queue($queue) } );
 
     return undef unless defined($message);
 
@@ -430,7 +433,7 @@ Only with exact matches of the routing key.>
 =cut
 
 sub queue_bind {
-    my ($self, $channel, $queue, $exchange, $pattern) = @_;
+    my ( $self, $channel, $queue, $exchange, $pattern ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -438,21 +441,24 @@ sub queue_bind {
 
     die "Unknown queue: $queue" unless $self->_queue_exists($queue);
 
-    die "Unknown exchange: $exchange" unless $self->_exchange_exists($exchange);
+    die "Unknown exchange: $exchange"
+        unless $self->_exchange_exists($exchange);
 
     my $binds = $self->bindings->{$exchange} || {};
 
     # Turn the pattern we're given into an actual regex
     my $regex = $pattern;
-    if(($pattern =~ /\#/) || ($pattern =~ /\*/)) {
-        if($pattern =~ /\#/) {
+    if ( ( $pattern =~ /\#/ ) || ( $pattern =~ /\*/ ) ) {
+        if ( $pattern =~ /\#/ ) {
             $regex =~ s/\#/\.\*/g;
-        } elsif($pattern =~ /\*/) {
+        }
+        elsif ( $pattern =~ /\*/ ) {
             $regex =~ s/\*/\[^\.]\*/g;
         }
-        $regex = '^'.$regex.'$';
+        $regex = '^' . $regex . '$';
         $regex = qr($regex);
-    } else {
+    }
+    else {
         $regex = qr/^$pattern$/;
     }
 
@@ -470,14 +476,16 @@ Creates a queue of the specified name.
 =cut
 
 my $queue = 0;
+
 sub queue_declare {
-    my ($self, $channel, $queue, $options) = @_;
+    my ( $self, $channel, $queue, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel: $channel" unless $self->_channel_exists($channel);
 
-    if ($options->{passive}) {
+    if ( $options->{passive} ) {
+
         # Would rabbitmq die if $queue was undef or q{}?
         return
                unless defined $queue
@@ -487,7 +495,7 @@ sub queue_declare {
     else {
         $queue = 'queue-' . $queue++
             unless defined $queue && length $queue;
-        $self->_set_queue($queue, []) unless $self->_queue_exists($queue);
+        $self->_set_queue( $queue, [] ) unless $self->_queue_exists($queue);
     }
 
     return $queue unless wantarray;
@@ -505,7 +513,7 @@ Deletes a queue of the specified name.
 =cut
 
 sub queue_delete {
-    my ($self, $channel, $queue, $options) = @_;
+    my ( $self, $channel, $queue, $options ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -521,7 +529,7 @@ Unbinds the specified routing key from the provided queue and exchange.
 =cut
 
 sub queue_unbind {
-    my ($self, $channel, $queue, $exchange, $routing_key) = @_;
+    my ( $self, $channel, $queue, $exchange, $routing_key ) = @_;
 
     die "Not connected" unless $self->connected;
 
@@ -531,7 +539,8 @@ sub queue_unbind {
 
     die "Unknown exchange: $queue" unless $self->_exchange_exists($exchange);
 
-    die "Unknown routing: $routing_key" unless $self->_binding_exists($routing_key);
+    die "Unknown routing: $routing_key"
+        unless $self->_binding_exists($routing_key);
 
     $self->_remove_binding($routing_key);
 }
@@ -544,16 +553,16 @@ binding that matches then the message will be added to the appropriate queue(s).
 =cut
 
 sub publish {
-    my $self = shift;
+    my $self    = shift;
     my $channel = shift;
 
     die "Not connected" unless $self->connected;
 
     die "Unknown channel: $channel" unless $self->_channel_exists($channel);
 
-    my $messages = $self->_tx_messages->{ $channel };
+    my $messages = $self->_tx_messages->{$channel};
     if ($messages) {
-        push @$messages, [ @_ ];
+        push @$messages, [@_];
         return;
     }
 
@@ -561,28 +570,31 @@ sub publish {
 }
 
 sub _publish {
-    my ($self, $channel, $routing_key, $body, $options, $props) = @_;
+    my ( $self, $channel, $routing_key, $body, $options, $props ) = @_;
 
     my $exchange = $options->{exchange};
-    unless($exchange) {
+    unless ($exchange) {
         $exchange = 'amq.direct';
     }
 
-    die "Unknown exchange: $exchange" unless $self->_exchange_exists($exchange);
+    die "Unknown exchange: $exchange"
+        unless $self->_exchange_exists($exchange);
 
     # Get the bindings for the specified exchange and test each key to see
     # if our routing key matches.  If it does, push it into the queue
     my $binds = $self->bindings->{$exchange};
-    foreach my $pattern (keys %{ $binds }) {
-        if($routing_key =~ $pattern) {
-            print STDERR "Publishing '$routing_key' to ".$binds->{$pattern}."\n" if $self->debug;
+    foreach my $pattern ( keys %{$binds} ) {
+        if ( $routing_key =~ $pattern ) {
+            print STDERR "Publishing '$routing_key' to "
+                . $binds->{$pattern} . "\n"
+                if $self->debug;
             my $message = {
-                body         => $body,
-                routing_key  => $routing_key,
-                exchange     => $exchange,
-                props        => $props || {},
+                body        => $body,
+                routing_key => $routing_key,
+                exchange    => $exchange,
+                props       => $props || {},
             };
-            push(@{ $self->_get_queue($binds->{$pattern}) }, $message);
+            push( @{ $self->_get_queue( $binds->{$pattern} ) }, $message );
         }
     }
 }
@@ -615,7 +627,7 @@ sub recv {
     my $queue = $self->queue;
     die "No queue, did you consume() first?" unless defined($queue);
 
-    my $message = shift(@{ $self->_get_queue($self->queue) });
+    my $message = shift( @{ $self->_get_queue( $self->queue ) } );
 
     return undef unless defined $message;
 
@@ -627,16 +639,16 @@ sub recv {
 }
 
 sub _apply_defaults {
-    my ($self, $args, $defaults) = @_;
+    my ( $self, $args, $defaults ) = @_;
 
     $args ||= {};
     my $new_args = {};
 
-    foreach my $key (keys %$args) {
+    foreach my $key ( keys %$args ) {
         $new_args->{$key} = $args->{$key};
     }
 
-    foreach my $key (keys %$defaults) {
+    foreach my $key ( keys %$defaults ) {
         next if exists $new_args->{$key};
         $new_args->{$key} = $defaults->{$key};
     }
