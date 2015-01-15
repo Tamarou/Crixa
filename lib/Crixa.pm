@@ -11,7 +11,7 @@ our $VERSION = '0.11';
 use Moose;
 
 use Crixa::Channel;
-use Net::AMQP::RabbitMQ 0.008000;
+use Net::AMQP::RabbitMQ 0.009000;
 
 with qw(Crixa::HasMQ);
 
