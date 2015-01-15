@@ -114,15 +114,11 @@ __END__
     my $channel  = $mq->channel;
     my $exchange = $channel->exchange( name => 'hello' );
 
-    sub send {
-        $exchange->publish('Hello World');
-    }
+    $exchange->publish('Hello World');
 
     my $queue = $exchange->queue( name => 'hello' );
 
-    sub receive {
-        $queue->handle_message( sub { say $_->body } );
-    }
+    $queue->handle_message( sub { say $_->body } );
 
 =head1 DESCRIPTION
 
