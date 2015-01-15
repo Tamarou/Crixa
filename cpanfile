@@ -15,10 +15,10 @@ on 'test' => sub {
   requires "Module::Runtime" => "0";
   requires "MooseX::Getopt::Dashes" => "0";
   requires "Test::Class::Moose" => "0";
+  requires "Test::Class::Moose::Config" => "0";
   requires "Test::Class::Moose::Load" => "0";
   requires "Test::Class::Moose::Runner" => "0";
   requires "Test::More" => "0.96";
-  requires "Test::Net::RabbitMQ" => "0";
   requires "Try::Tiny" => "0";
   requires "lib" => "0";
 };
