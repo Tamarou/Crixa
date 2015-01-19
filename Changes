@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.11 2015-01-19
+
   [ENHANCEMENTS]
 
   * Implemented Crixa::Queue->consume(), a blocking API for waiting until
