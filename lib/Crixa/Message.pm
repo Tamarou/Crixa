@@ -8,6 +8,8 @@ our $VERSION = '0.12';
 
 use Moose;
 
+use Math::UInt64;
+
 has channel => (
     isa      => 'Crixa::Channel',
     is       => 'ro',
@@ -70,7 +72,7 @@ has exchange => (
 
 has delivery_tag => (
     is       => 'ro',
-    isa      => 'Str',
+    isa      => 'Math::UInt64',
     required => 1,
 );
 
