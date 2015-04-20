@@ -35,6 +35,7 @@ before_install:
 
 install:
   - cpan-install ExtUtils::MakeMaker~6.68 --deps
+  - cpan-install --coverage
 
 before_script:
   - coverage-setup
