@@ -111,7 +111,7 @@ __END__
     use Crixa;
 
     my $mq       = Crixa->connect( host => 'localhost' );
-    my $channel  = $mq->channel;
+    my $channel  = $mq->new_channel;
     my $exchange = $channel->exchange( name => 'hello' );
 
     $exchange->publish('Hello World');
