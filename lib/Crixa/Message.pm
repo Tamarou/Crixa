@@ -8,7 +8,7 @@ our $VERSION = '0.12';
 
 use Moose;
 
-use Math::UInt64;
+use Math::Int64 0.34;
 
 has channel => (
     isa      => 'Crixa::Channel',
