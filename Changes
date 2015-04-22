@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.12 2015-04-22
+
   [BUG FIXES]
 
   * The latest Net::AMQP::RabbitMQ release made the message delivery_tag a

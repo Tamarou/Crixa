@@ -1,7 +1,8 @@
+requires "Math::Int64" => "0.34";
 requires "Moose" => "0";
 requires "Moose::Role" => "0";
 requires "Moose::Util::TypeConstraints" => "0";
-requires "Net::AMQP::RabbitMQ" => "0.009000";
+requires "Net::AMQP::RabbitMQ" => "0.310000";
 requires "namespace::autoclean" => "0";
 requires "perl" => "v5.10.0";
 requires "strict" => "0";
@@ -19,6 +20,7 @@ on 'test' => sub {
   requires "Test::Class::Moose::Load" => "0";
   requires "Test::Class::Moose::Runner" => "0";
   requires "Test::More" => "0.96";
+  requires "Test::Net::RabbitMQ" => "0.13";
   requires "Try::Tiny" => "0";
   requires "lib" => "0";
 };
