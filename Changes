@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+  [BUG FIXES]
+
+  * The latest Net::AMQP::RabbitMQ release made the message delivery_tag a
+    Math::UInt64 object, which broke Crixa. Fixed by Ran Eilam.
+
+
 0.11 2015-01-19
 
   [ENHANCEMENTS]
