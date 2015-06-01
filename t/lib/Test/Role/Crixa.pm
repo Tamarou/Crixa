@@ -25,13 +25,6 @@ has crixa => (
     builder => '_build_crixa',
 );
 
-has channel => (
-    is      => 'ro',
-    isa     => 'Crixa::Channel',
-    lazy    => 1,
-    default => sub { $_[0]->_crixa()->new_channel() },
-);
-
 # Using test_setup/teardown would be much more complicated, as we'd have to
 # temporarily store the exchange & queue in an object attribute and then clear
 # them.
