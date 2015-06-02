@@ -5,6 +5,10 @@ use warnings;
 use namespace::autoclean;
 
 use Crixa;
+use Crixa::Message;
+use Math::BigInt ();
+use Math::UInt64 qw( uint64 );
+use Test::Fatal qw( exception );
 use Test::More;
 use Try::Tiny;
 
@@ -301,6 +305,33 @@ sub test_channels {
         $exchange->delete( { if_unused => 0 } )
             if $exchange;
     };
+}
+
+sub test_message_constructor_delivery_tag_constraint {
+    my $self = shift;
+
+    for my $tag ( 1, '3132', uint64(1), Math::BigInt->bone, ) {
+        is(
+            exception {
+                Crixa::Message->new(
+                    channel       => $self->_channel,
+                    body          => q{},
+                    props         => {},
+                    redelivered   => 0,
+                    routing_key   => q{},
+                    exchange      => q{},
+                    message_count => 1,
+                    delivery_tag  => $tag,
+                    )
+            },
+            undef,
+            sprintf(
+                'no exception thrown in message constructor with delivery_tag of %s (%s)',
+                $tag, ref $tag || 'scalar'
+            )
+        );
+    }
+
 }
 
 sub _wait_for_min_messages {

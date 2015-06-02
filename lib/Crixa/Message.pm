@@ -9,6 +9,7 @@ our $VERSION = '0.13';
 use Moose;
 
 use Math::Int64 0.34;
+use Moose::Util::TypeConstraints;
 
 has channel => (
     isa      => 'Crixa::Channel',
@@ -70,9 +71,20 @@ has exchange => (
     required => 1,
 );
 
+# This allows both standard integers and integer objects (e.g., Math::UInt64)
+# as long as they stringify correctly.
+my $non_negative_int = subtype(
+    as 'Defined',
+    where {},
+    inline_as {
+        $_[0]->parent()->_inline_check( $_[1] )
+            . " && $_[1]  =~ /^[0-9]+\\z/ ";
+    }
+);
+
 has delivery_tag => (
     is       => 'ro',
-    isa      => 'Math::UInt64',
+    isa      => $non_negative_int,
     required => 1,
 );
 
