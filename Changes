@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.13 2015-06-02
+
   [BUG FIXES]
 
   * Crixa now allows the message delivery_tag to be any non-negative integer
