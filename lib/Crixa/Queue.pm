@@ -235,12 +235,14 @@ hashref with the following keys:
 
 =item no_ack => $bool
 
-If this is true, then the message is not acknowledged as it is taken from the
+If this is true, then the server considers messages acknowledged after
+delivery. Calling the C<ack> method later with this message's delivery tag will
+be an error. You can think of this as choosing to not use message
+acknowledgment.
+
+If this is false, then the message is not acknowledged as it is taken from the
 queue. You will need to explicitly acknowledge it using the C<ack> method on
 the L<Crixa::Channel> object from which the message came.
-
-If this is false, then the message is acknowledged immediately. Calling the
-C<ack> method later with this message's delivery tag will be an error.
 
 This defaults to true.
 
