@@ -1,5 +1,13 @@
 {{$NEXT}}
 
+  [BUG FIXES]
+
+  * Update the documentation about the Crixa::Queue->consume() "no_ack"
+    parameter to reflect that true means auto acknowledgment and false means
+    the consumer must acknowledge messages. Previously the documentation stated
+    the opposite.
+
+
 0.13 2015-06-02
 
   [BUG FIXES]
