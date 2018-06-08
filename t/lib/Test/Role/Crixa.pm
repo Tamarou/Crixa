@@ -264,7 +264,6 @@ sub test_channels {
 
     my $channel = $self->crixa()->new_channel();
 
-    my $first_id = $channel->id();
     like( $channel->id(), qr/^\d+$/, 'channel id is numeric' );
     isnt(
         $self->crixa()->new_channel()->id(),
