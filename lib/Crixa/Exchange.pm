@@ -74,7 +74,7 @@ sub publish {
     my $args = @_ > 1 ? {@_} : ref $_[0] ? $_[0] : { body => $_[0] };
 
     my $routing_key = delete $args->{routing_key} // q{};
-    my $body = delete $args->{body}
+    my $body        = delete $args->{body}
         || confess(
         'You must supply a body when calling the publish() method');
     my $props = delete $args->{props};
