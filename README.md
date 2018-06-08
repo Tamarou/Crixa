@@ -4,25 +4,21 @@ Crixa - A Cleaner API for Net::AMQP::RabbitMQ
 
 # VERSION
 
-version 0.09
+version 0.14
 
 # SYNOPSIS
 
     use Crixa;
 
     my $mq       = Crixa->connect( host => 'localhost' );
-    my $channel  = $mq->channel;
+    my $channel  = $mq->new_channel;
     my $exchange = $channel->exchange( name => 'hello' );
 
-    sub send {
-        $exchange->publish('Hello World');
-    }
+    $exchange->publish('Hello World');
 
     my $queue = $exchange->queue( name => 'hello' );
 
-    sub receive {
-        $queue->handle_message( sub { say $_->body } );
-    }
+    $queue->handle_message( sub { say $_->body } );
 
 # DESCRIPTION
 
@@ -101,7 +97,7 @@ Returns the user passed to the constructor, if any.
 
 Returns the password passed to the constructor, if any.
 
-## $crixa->connected
+## $crixa->is\_connected
 
 This returns true if the underlying mq object thinks it is connected.
 
@@ -178,11 +174,6 @@ object in the `test_messages()` sub:
 Of course, this is a very artificial example, but in real code you may come
 across this problem.
 
-# SUPPORT
-
-Please report all issues with this code using the GitHub issue tracker at
-[https://github.com/Tamarou/Crixa/issues](https://github.com/Tamarou/Crixa/issues).
-
 # SEE ALSO
 
 This module uses [Net::AMQP::RabbitMQ](https://metacpan.org/pod/Net::AMQP::RabbitMQ) under the hood, though it does not
@@ -193,18 +184,38 @@ Bunny documentation at http://rubybunny.info/articles/guides.html. We strongly
 recommend browsing this to get a better understanding of how RabbitMQ works,
 what different options for exchanges, queues, and messages mean, and more.
 
+# SUPPORT
+
+Please report all issues with this code using the GitHub issue tracker at
+[https://github.com/Tamarou/Crixa/issues](https://github.com/Tamarou/Crixa/issues).
+
+Bugs may be submitted at [http://rt.cpan.org/Public/Dist/Display.html?Name=Crixa](http://rt.cpan.org/Public/Dist/Display.html?Name=Crixa) or via email to [bug-crixa@rt.cpan.org](mailto:bug-crixa@rt.cpan.org).
+
+I am also usually active on IRC as 'autarch' on `irc://irc.perl.org`.
+
+# SOURCE
+
+The source code repository for Crixa can be found at [https://github.com/Tamarou/Crixa](https://github.com/Tamarou/Crixa).
+
 # AUTHORS
 
 - Chris Prather <chris@prather.org>
 - Dave Rolsky <autarch@urth.org>
 
-# CONTRIBUTOR
+# CONTRIBUTORS
 
-Torsten Raudssus <torsten@raudss.us>
+- Gregory Oschwald <goschwald@maxmind.com>
+- Gregory Oschwald <oschwald@gmail.com>
+- Ran Eilam <ran.eilam@gmail.com>
+- Torsten Raudssus <torsten@raudss.us>
+- Will Storey <will@summercat.com>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 - 2014 by Chris Prather.
+This software is copyright (c) 2012 - 2018 by Chris Prather.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
+
+The full text of the license can be found in the
+`LICENSE` file included with this distribution.
